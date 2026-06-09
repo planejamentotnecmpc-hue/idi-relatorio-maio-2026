@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Relatório de Status dos Projetos — Maio 2026</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Segoe UI',Arial,sans-serif;background:#EFF2EE;color:#1A2B1F;}
@@ -139,35 +138,65 @@
 
   /* ====== PRINT / PDF ====== */
   @media print{
-    body{background:white;}
-    .btn-pdf,.tabs-wrap,.tab{display:none!important;}
+    @page{size:A4 landscape;margin:14mm 12mm;}
+    *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+    body{background:white!important;}
+
+    /* Oculta elementos de navegação */
+    .btn-pdf,.tabs-wrap{display:none!important;}
+
+    /* Mostra todas as seções e blocos */
     .tab-content{display:block!important;}
     .person-body{display:block!important;}
-    .header{padding:24px 32px 20px;}
-    .section{padding:18px 32px;}
-    .ide-section{padding:18px 32px;}
-    .excl-section{padding:18px 32px;}
-    /* Permite que blocos grandes fluam naturalmente entre páginas */
-    .person-block{page-break-inside:auto;box-shadow:none;border:1px solid #e2e8f0;margin-bottom:12px;}
-    /* Impede que o cabeçalho da pessoa fique sozinho no final de uma página */
-    .person-header{page-break-after:avoid;page-break-inside:avoid;}
-    /* Mantém a nota de análise junto ao que vem antes */
-    .person-note{page-break-after:avoid;page-break-inside:avoid;}
-    .score-card{box-shadow:none;border:1px solid #e2e8f0;}
-    .section-title{page-break-after:avoid;}
-    .cards-grid{page-break-inside:avoid;}
-    h2,h3{page-break-after:avoid;}
-    .ide-grid{page-break-inside:avoid;}
-    /* Tabelas fluem entre páginas, mas nunca quebra dentro de uma linha */
-    .project-table-wrap table{page-break-inside:auto;}
-    tr{page-break-inside:avoid;page-break-after:auto;}
+
+    /* Reduz padding para aproveitar melhor o espaço */
+    .header{padding:16px 28px 12px!important;}
+    .legend{padding:8px 28px!important;}
+    .ide-section{padding:12px 28px!important;}
+    .section{padding:12px 28px!important;}
+    .excl-section{padding:12px 28px!important;}
+
+    /* Remove sombras e bordas desnecessárias */
+    .person-block{box-shadow:none!important;border:1px solid #DDE5DA!important;border-radius:4px!important;margin-bottom:8px!important;}
+    .score-card{box-shadow:none!important;border:1px solid #DDE5DA!important;}
+
+    /* Blocos de resumo — nunca quebrar no meio */
+    .ide-grid{break-inside:avoid!important;page-break-inside:avoid!important;}
+    .ide-equation{break-inside:avoid!important;page-break-inside:avoid!important;}
+    .cards-grid{break-inside:avoid!important;page-break-inside:avoid!important;}
+    .legend{break-inside:avoid!important;}
+
+    /* Cabeçalho de seção nunca fica sozinho no final da página */
+    .section-title{break-after:avoid!important;page-break-after:avoid!important;}
+    h2,h3{break-after:avoid!important;page-break-after:avoid!important;}
+
+    /* ===== REGRA MAIS IMPORTANTE =====
+       header + note + início da tabela ficam juntos:
+       — o header não pode ser a última coisa numa página
+       — a note não pode ficar separada do header
+       — o project-table-wrap não pode abrir numa página sem o header acima */
+    .person-header{
+      break-after:avoid!important;page-break-after:avoid!important;
+      break-inside:avoid!important;page-break-inside:avoid!important;
+    }
+    .person-note{
+      break-before:avoid!important;page-break-before:avoid!important;
+      break-after:avoid!important;page-break-after:avoid!important;
+      break-inside:avoid!important;page-break-inside:avoid!important;
+    }
+    .project-table-wrap{
+      break-before:avoid!important;page-break-before:avoid!important;
+    }
+    /* Impede linha solitária no fim/início de tabela */
+    tr{break-inside:avoid!important;page-break-inside:avoid!important;}
     thead{display:table-header-group;}
-    /* Quebras forçadas apenas entre grandes seções */
-    .section.implantadores-section{page-break-before:always;}
-    .section.ts-section{page-break-before:always;}
-    .section.plan-section{page-break-before:always;}
-    .excl-section{page-break-before:always;}
-    @page{margin:16mm 12mm;}
+    table{orphans:3;widows:3;}
+
+    /* Quebras forçadas entre grandes blocos de conteúdo */
+    .implantadores-section{break-before:always!important;page-break-before:always!important;}
+    .ts-section{break-before:always!important;page-break-before:always!important;}
+    .plan-section{break-before:always!important;page-break-before:always!important;}
+    .excl-section{break-before:always!important;page-break-before:always!important;}
   }
 
   /* ===== COLUNAS POR FUNÇÃO ===== */
@@ -936,59 +965,17 @@
 
   // ---- GERAR PDF ----
   function gerarPDF() {
-    const btn = document.querySelector('.btn-pdf');
-    const original = btn.innerHTML; // salva ANTES de alterar
-
-    // Expande todos os blocos
+    // Expande todos os blocos antes de imprimir
     document.querySelectorAll('.person-body').forEach(el => el.classList.add('open'));
     document.querySelectorAll('.toggle-icon').forEach(el => el.classList.add('open'));
-    // Mostra todas as abas
-    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'block');
-
-    btn.innerHTML = '⏳ Gerando...';
-    btn.disabled = true;
-
-    const opt = {
-      margin: [12, 10, 12, 10],
-      filename: 'Relatorio_Status_Projetos_Maio2026.pdf',
-      image: { type: 'jpeg', quality: 0.97 },
-      html2canvas: {
-        scale: 1.4,
-        useCORS: true,
-        scrollY: 0,
-        onclone: function(clonedDoc) {
-          // Esconde botão e abas no clone — não aparecem no PDF
-          const b = clonedDoc.querySelector('.btn-pdf');
-          if (b) b.style.display = 'none';
-          const tw = clonedDoc.querySelector('.tabs-wrap');
-          if (tw) tw.style.display = 'none';
-
-          // Agrupa header + nota de cada pessoa num wrapper com avoid-break
-          // Isso garante que o nome nunca fica sozinho no fim da página
-          clonedDoc.querySelectorAll('.person-block').forEach(function(block) {
-            const header = block.querySelector('.person-header');
-            const note   = block.querySelector('.person-note');
-            if (!header) return;
-            const wrapper = clonedDoc.createElement('div');
-            wrapper.style.cssText = 'page-break-inside:avoid;break-inside:avoid;';
-            header.parentNode.insertBefore(wrapper, header);
-            wrapper.appendChild(header);
-            if (note) wrapper.appendChild(note);
-          });
-        }
-      },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
-      pagebreak: { mode: ['avoid-all', 'css'] }
-    };
-
-    html2pdf().set(opt).from(document.body).save().then(() => {
-      btn.innerHTML = original;
-      btn.disabled = false;
-      // Restaura visibilidade das abas
-      document.querySelectorAll('.tab-content').forEach(el => el.style.display = '');
-      document.getElementById('tab-implantadores').classList.add('active');
-    });
+    window.print();
   }
+
+  // Após impressão: recolhe os blocos que estavam fechados
+  window.addEventListener('afterprint', function() {
+    document.querySelectorAll('.person-body').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.toggle-icon').forEach(el => el.classList.remove('open'));
+  });
 </script>
 </body>
 </html>

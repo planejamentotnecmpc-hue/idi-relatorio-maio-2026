@@ -940,17 +940,42 @@
 </div>
 
 <script>
-  // ---- AGENDA SEMANAL: nunca N/A para implantadores (col 8) ----
-  document.querySelectorAll('#tab-implantadores table tr').forEach(function(row) {
-    const cells = row.querySelectorAll('td');
-    if (cells.length < 8) return; // pula cabeçalho e linhas curtas
-    const agenda = cells[7]; // 8ª célula = Agenda Semanal
-    const badge = agenda.querySelector('.badge');
-    if (badge && badge.classList.contains('na')) {
-      badge.className = 'badge nc';
-      badge.textContent = 'Não enviado';
-    }
-  });
+  // ---- AGENDA SEMANAL: valores reais do Excel (coluna ATA DE REUNIÃO) ----
+  (function() {
+    var dados = [
+      { key: 'Central de Resíduos',        val: 3 },
+      { key: 'Instituto CMPC',             val: 4 },
+      { key: 'Aumento capacidade',         val: 1 },
+      { key: 'Difusores TB2',              val: 2 },
+      { key: 'ETE G1',                     val: 0 },
+      { key: 'Pintura da Cloro Soda',      val: 0 },
+      { key: 'Chuveiros de alta press',    val: 1 },
+      { key: 'polarizador retificador',    val: 1 },
+      { key: 'Passador de Ponta',          val: 4 },
+      { key: 'recirculação de licor',      val: 2 },
+      { key: 'Ponte Rolante',              val: 3 },
+      { key: 'Nova rede esgoto',           val: 4 },
+      { key: 'Calçadas do Parque',         val: 2 },
+      { key: 'Condições Seg',              val: 4 },
+      { key: 'Linhas de Vida',             val: 3 },
+      { key: 'Defensas',                   val: 0 }
+    ];
+    document.querySelectorAll('#tab-implantadores .project-table-wrap table tr').forEach(function(row) {
+      var cells = row.querySelectorAll('td');
+      if (cells.length < 8) return;
+      var projText = cells[0].textContent || '';
+      var badge = cells[7].querySelector('.badge');
+      if (!badge || !badge.classList.contains('na')) return;
+      for (var i = 0; i < dados.length; i++) {
+        if (projText.indexOf(dados[i].key) !== -1) {
+          var v = dados[i].val;
+          badge.className = 'badge ' + (v === 4 ? 'ok' : v >= 2 ? 'parcial' : 'nc');
+          badge.textContent = v + ' de 4';
+          break;
+        }
+      }
+    });
+  })();
 
   // ---- TABS ----
   function switchTab(name, btn) {

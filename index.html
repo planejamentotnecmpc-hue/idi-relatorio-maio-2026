@@ -940,6 +940,18 @@
 </div>
 
 <script>
+  // ---- AGENDA SEMANAL: nunca N/A para implantadores (col 8) ----
+  document.querySelectorAll('#tab-implantadores table tr').forEach(function(row) {
+    const cells = row.querySelectorAll('td');
+    if (cells.length < 8) return; // pula cabeçalho e linhas curtas
+    const agenda = cells[7]; // 8ª célula = Agenda Semanal
+    const badge = agenda.querySelector('.badge');
+    if (badge && badge.classList.contains('na')) {
+      badge.className = 'badge nc';
+      badge.textContent = 'Não enviado';
+    }
+  });
+
   // ---- TABS ----
   function switchTab(name, btn) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));

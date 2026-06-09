@@ -172,6 +172,45 @@
   .rnk-rsc{color:#A0C4A8;font-weight:700;font-size:.88rem;}
   .rnk-subtitle{font-size:.72rem;font-weight:700;color:#8AB0A0;text-transform:uppercase;letter-spacing:1px;border-left:3px solid #2D6A4F;padding-left:8px;margin-bottom:8px;}
 
+  /* ====== GAPS TAB ====== */
+  .gap-summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
+  .gap-sum-chip{flex:1;min-width:140px;border-radius:8px;padding:14px 18px;display:flex;align-items:center;gap:12px;}
+  .gap-sum-chip.chip-crit{background:#FDF2F2;border:1px solid #F5C6CB;}
+  .gap-sum-chip.chip-ok  {background:#ECF6EE;border:1px solid #B7D4C5;}
+  .gap-sum-chip .chip-num{font-size:2rem;font-weight:900;line-height:1;}
+  .gap-sum-chip.chip-crit .chip-num{color:#C53030;}
+  .gap-sum-chip.chip-ok  .chip-num{color:#1B4332;}
+  .gap-sum-chip .chip-lbl{font-size:.72rem;font-weight:600;color:#4A5568;line-height:1.4;}
+  .gap-section-lbl{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:#718096;border-left:3px solid #E53E3E;padding-left:8px;margin:20px 0 10px;}
+  .gap-section-lbl.lbl-ok{border-left-color:#2D6A4F;}
+  .gap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;}
+  .gap-card{background:white;border-radius:8px;padding:13px 15px;box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:pointer;transition:transform .15s,box-shadow .15s;border-left:4px solid #CBD5E0;}
+  .gap-card:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.11);}
+  .gap-card.gc-crit{border-left-color:#E53E3E;}
+  .gap-card.gc-warn{border-left-color:#D69E2E;}
+  .gap-card.gc-ok  {border-left-color:#2D6A4F;}
+  .gap-card.gc-top {border-left-color:#0D6131;}
+  .gap-top{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
+  .gap-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:.75rem;flex-shrink:0;}
+  .gap-info{flex:1;min-width:0;}
+  .gap-name{font-weight:800;font-size:.9rem;color:#1A2B1F;}
+  .gap-role{font-size:.63rem;color:#718096;text-transform:uppercase;letter-spacing:.4px;margin-top:1px;}
+  .gap-score-col{text-align:right;flex-shrink:0;}
+  .gap-score{font-weight:900;font-size:1.15rem;line-height:1.1;}
+  .gap-score.s-crit{color:#C53030;}
+  .gap-score.s-warn{color:#975A00;}
+  .gap-score.s-ok  {color:#2D6A4F;}
+  .gap-score.s-top {color:#0D6131;}
+  .gap-delta{font-size:.66rem;font-weight:700;margin-top:1px;}
+  .gap-delta.d-neg{color:#E53E3E;}
+  .gap-delta.d-pos{color:#2D6A4F;}
+  .gap-items{display:flex;flex-direction:column;gap:3px;border-top:1px solid #EEF2EE;padding-top:8px;}
+  .gi{font-size:.74rem;padding:4px 8px 4px 20px;border-radius:4px;position:relative;line-height:1.35;}
+  .gi::before{content:'●';position:absolute;left:6px;top:5px;font-size:.45rem;}
+  .gi-crit{background:#FDF2F2;color:#7A1A1A;}.gi-crit::before{color:#E53E3E;}
+  .gi-warn{background:#FEFAED;color:#6B4E00;}.gi-warn::before{color:#D69E2E;}
+  .gi-ok  {background:#ECF6EE;color:#1B4332;}.gi-ok::before{color:#2D6A4F;}
+
   /* ====== PRINT / PDF ====== */
   @media print{
     @page{size:A4 landscape;margin:14mm 12mm;}
@@ -380,6 +419,7 @@
     <button class="tab active" onclick="switchTab('implantadores',this)">👷 Implantadores</button>
     <button class="tab" onclick="switchTab('planejadores',this)">📐 Planejadores</button>
     <button class="tab" onclick="switchTab('ts',this)">🦺 Técnicos de Segurança</button>
+    <button class="tab" onclick="switchTab('gaps',this)">⚠️ Gaps & Atenção</button>
   </div>
 </div>
 
@@ -925,6 +965,371 @@
   </div>
 </div>
 
+<!-- ABA: GAPS & ATENÇÃO -->
+<div id="tab-gaps" class="tab-content">
+  <div class="section">
+    <div class="section-title">Gaps & Pontos de Atenção — Maio 2026</div>
+
+    <!-- Summary -->
+    <div class="gap-summary">
+      <div class="gap-sum-chip chip-crit">
+        <div class="chip-num">7</div>
+        <div class="chip-lbl">Pessoas abaixo<br>da meta (70%)</div>
+      </div>
+      <div class="gap-sum-chip chip-ok">
+        <div class="chip-num">10</div>
+        <div class="chip-lbl">Pessoas acima<br>da meta (70%)</div>
+      </div>
+    </div>
+
+    <!-- ABAIXO DA META -->
+    <div class="gap-section-lbl">Abaixo da Meta — Prioridade de Ação</div>
+    <div class="gap-grid">
+
+      <!-- Toni 40,83% -->
+      <div class="gap-card gc-crit" onclick="goToTab('implantadores','imp-toni')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#742A2A;">TO</div>
+          <div class="gap-info">
+            <div class="gap-name">Toni</div>
+            <div class="gap-role">Implantador · 3 projetos</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-crit">40,83%</div>
+            <div class="gap-delta d-neg">−29,2% da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-crit">Automação G1: 7/10 itens NC — RDO vazia, Medição, Fotos, LV, ATA, Cronograma e RSP ausentes</div>
+          <div class="gi gi-crit">Gabinetes G1: RDO/Fotos/LV/ATA ausentes, Plano de Segurança vazio</div>
+          <div class="gi gi-warn">Único item consistente nos 3 projetos: Plano de Ataque</div>
+        </div>
+      </div>
+
+      <!-- Gabriel 42,72% -->
+      <div class="gap-card gc-crit" onclick="goToTab('implantadores','imp-gabriel')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#742A2A;">GB</div>
+          <div class="gap-info">
+            <div class="gap-name">Gabriel</div>
+            <div class="gap-role">Implantador · 5 projetos</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-crit">42,72%</div>
+            <div class="gap-delta d-neg">−27,3% da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-crit">Calçadas do Parque: todas as 9 pastas vazias — zero evidências de Maio</div>
+          <div class="gi gi-crit">LV vazia em 3/5 projetos; AST ausente em 2 projetos</div>
+          <div class="gi gi-warn">RDO incompleta em 3 projetos; Fotos fora do prazo nas Defensas</div>
+        </div>
+      </div>
+
+      <!-- Gerlan 45,60% -->
+      <div class="gap-card gc-crit" onclick="goToTab('implantadores','imp-gerlan')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#7B341E;">GL</div>
+          <div class="gap-info">
+            <div class="gap-name">Gerlan</div>
+            <div class="gap-role">Implantador · 4 projetos</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-crit">45,60%</div>
+            <div class="gap-delta d-neg">−24,4% da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-crit">LV vazia em 3/4 projetos</div>
+          <div class="gi gi-crit">Melhoria Limpeza: ATA, Cronograma e RSP com evidência de não envio</div>
+          <div class="gi gi-warn">RDO fora do prazo ou incompleta em 3 projetos; Ponte Rolante com RSP evidência de não envio</div>
+        </div>
+      </div>
+
+      <!-- Alcides 52,73% -->
+      <div class="gap-card gc-crit" onclick="goToTab('planejadores','plan-alcides')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#744210;">AL</div>
+          <div class="gap-info">
+            <div class="gap-name">Alcides</div>
+            <div class="gap-role">Planejador de Rotina</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-crit">52,73%</div>
+            <div class="gap-delta d-neg">−17,3% da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-crit">Agenda semanal: apenas 34/88 enviadas (39%) — item com maior impacto</div>
+          <div class="gi gi-crit">Cronograma e RSP com menos da metade das entregas esperadas</div>
+          <div class="gi gi-ok">HHT e Programação semanal: únicos itens atingidos</div>
+        </div>
+      </div>
+
+      <!-- Tulho 57,19% -->
+      <div class="gap-card gc-crit" onclick="goToTab('implantadores','imp-tulho')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#744210;">TU</div>
+          <div class="gap-info">
+            <div class="gap-name">Tulho</div>
+            <div class="gap-role">Implantador · 3 projetos</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-warn">57,19%</div>
+            <div class="gap-delta d-neg">−12,8% da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-crit">AST vazia nos 3 projetos</div>
+          <div class="gi gi-crit">Medição ausente em 2 projetos (LBF e Kamyr)</div>
+          <div class="gi gi-warn">Cronograma e RSP ausentes no Kamyr; projetos LBF e Kamyr em fase PG (RDO N/A)</div>
+        </div>
+      </div>
+
+      <!-- Geraldo 60,83% -->
+      <div class="gap-card gc-warn" onclick="goToTab('implantadores','imp-geraldo')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#975A00;">GR</div>
+          <div class="gap-info">
+            <div class="gap-name">Geraldo</div>
+            <div class="gap-role">Implantador · 2 projetos</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-warn">60,83%</div>
+            <div class="gap-delta d-neg">−9,2% da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-crit">ETE G1: RDO incompleta (faltam 11 arq.), Plano de Ataque, Fotos, LV e Medição vazios</div>
+          <div class="gi gi-warn">Pintura Cloro Soda: Medição ausente (único NC)</div>
+          <div class="gi gi-ok">Pintura Cloro Soda quase perfeita — puxa a nota para cima</div>
+        </div>
+      </div>
+
+      <!-- Fernando 67,50% -->
+      <div class="gap-card gc-warn" onclick="goToTab('planejadores','plan-fernando')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#975A00;">FN</div>
+          <div class="gap-info">
+            <div class="gap-name">Fernando</div>
+            <div class="gap-role">Planejador Especial</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-warn">67,50%</div>
+            <div class="gap-delta d-neg">−2,5% da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-crit">Agenda semanal: apenas 2/4 enviadas (50%) — item mais impactante</div>
+          <div class="gi gi-warn">Cronograma e RSP parciais: 3/4 cada</div>
+          <div class="gi gi-ok">HHT e relatório mensal: conformes</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ACIMA DA META -->
+    <div class="gap-section-lbl lbl-ok">Acima da Meta — Pontos de Melhoria</div>
+    <div class="gap-grid">
+
+      <!-- Jacó 72,08% -->
+      <div class="gap-card gc-ok" onclick="goToTab('implantadores','imp-jaco')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#2D6A4F;">JC</div>
+          <div class="gap-info">
+            <div class="gap-name">Jacó</div>
+            <div class="gap-role">Implantador · 2 projetos</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-ok">72,08%</div>
+            <div class="gap-delta d-pos">+2,1% acima da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-warn">LV vazia nos 2 projetos Difusores TB2/TB3</div>
+          <div class="gi gi-warn">AST: vazia (Secadores G1) e fora do prazo (Difusores TB2/TB3)</div>
+          <div class="gi gi-warn">RDO sem arquivos de Maio no Secadores G1; ressalva de não envio nos Difusores</div>
+        </div>
+      </div>
+
+      <!-- Gleison 75,45% -->
+      <div class="gap-card gc-ok" onclick="goToTab('implantadores','imp-gleison')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#2D6A4F;">GL</div>
+          <div class="gap-info">
+            <div class="gap-name">Gleison</div>
+            <div class="gap-role">Implantador · 2 projetos</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-ok">75,45%</div>
+            <div class="gap-delta d-pos">+5,5% acima da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-warn">LV não entregue no Instituto CMPC</div>
+          <div class="gi gi-warn">RDO incompleta no Instituto CMPC (faltam 5 arquivos de Maio)</div>
+          <div class="gi gi-ok">Central de Resíduos com desempenho excelente</div>
+        </div>
+      </div>
+
+      <!-- Cristielen 81,36% -->
+      <div class="gap-card gc-ok" onclick="goToTab('ts','ts-cristielen')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#2D6A4F;">CR</div>
+          <div class="gap-info">
+            <div class="gap-name">Cristielen</div>
+            <div class="gap-role">Técnica de Segurança · 11 projetos</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-ok">81,36%</div>
+            <div class="gap-delta d-pos">+11,4% acima da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-crit">AST ausente nos projetos de Toni (Automação G1, Gabinetes inversores G1)</div>
+          <div class="gi gi-crit">Plano de Segurança vazio no Gabinetes inversores G1</div>
+          <div class="gi gi-ok">Maior carga entre os TSTs (11 projetos); maioria dos itens conformes</div>
+        </div>
+      </div>
+
+      <!-- Filipe 81,83% -->
+      <div class="gap-card gc-ok" onclick="goToTab('implantadores','imp-filipe')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#1B4332;">FI</div>
+          <div class="gap-info">
+            <div class="gap-name">Filipe</div>
+            <div class="gap-role">Implantador · 2 projetos</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-ok">81,83%</div>
+            <div class="gap-delta d-pos">+11,8% acima da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-crit">Acessibilidade: RDO vazia, Medição e Cronograma com referência de Abril (desatualizados)</div>
+          <div class="gi gi-crit">ATA de Reunião, RSP e AST de Maio ausentes no projeto Acessibilidade</div>
+          <div class="gi gi-ok">Central de Resíduos com desempenho excelente — sustenta a nota</div>
+        </div>
+      </div>
+
+      <!-- Maria 85,00% -->
+      <div class="gap-card gc-ok" onclick="goToTab('ts','ts-maria')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#2D6A4F;">MA</div>
+          <div class="gap-info">
+            <div class="gap-name">Maria</div>
+            <div class="gap-role">Técnica de Segurança</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-ok">85,00%</div>
+            <div class="gap-delta d-pos">+15,0% acima da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-warn">Penalização de 15% possivelmente oriunda de IDS ou pendências Greendocs</div>
+          <div class="gi gi-ok">Plano de Segurança e AST conformes em todos os projetos</div>
+        </div>
+      </div>
+
+      <!-- Thainá 85,00% -->
+      <div class="gap-card gc-ok" onclick="goToTab('ts','ts-thaina')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#2D6A4F;">TH</div>
+          <div class="gap-info">
+            <div class="gap-name">Thainá</div>
+            <div class="gap-role">Técnica de Segurança</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-ok">85,00%</div>
+            <div class="gap-delta d-pos">+15,0% acima da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-warn">AST fora do prazo no projeto Difusores TB2/TB3</div>
+          <div class="gi gi-ok">Plano de Segurança e demais itens conformes nos 2 projetos</div>
+        </div>
+      </div>
+
+      <!-- Pedro 90,00% -->
+      <div class="gap-card gc-top" onclick="goToTab('planejadores','plan-pedro')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#1B4332;">PE</div>
+          <div class="gap-info">
+            <div class="gap-name">Pedro</div>
+            <div class="gap-role">Planejador Especial</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-top">90,00%</div>
+            <div class="gap-delta d-pos">+20,0% acima da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-warn">1 semana de agenda semanal não enviada</div>
+          <div class="gi gi-ok">Todos os demais itens integralmente atendidos</div>
+        </div>
+      </div>
+
+      <!-- Agelem 91,43% -->
+      <div class="gap-card gc-top" onclick="goToTab('ts','ts-agelem')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#1B4332;">AG</div>
+          <div class="gap-info">
+            <div class="gap-name">Agelem</div>
+            <div class="gap-role">Técnica de Segurança</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-top">91,43%</div>
+            <div class="gap-delta d-pos">+21,4% acima da meta</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-warn">AST ausente nos projetos Acessibilidade (Filipe) e Água de Serviço (Tulho)</div>
+          <div class="gi gi-ok">Plano de Segurança conforme em todos os projetos</div>
+        </div>
+      </div>
+
+      <!-- Daniel 100% -->
+      <div class="gap-card gc-top" onclick="goToTab('planejadores','plan-daniel')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#0D6131;">DA</div>
+          <div class="gap-info">
+            <div class="gap-name">Daniel</div>
+            <div class="gap-role">Planejador Especial</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-top">100,00%</div>
+            <div class="gap-delta d-pos">IDI Máximo</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-ok">Todos os critérios de planejamento especial atendidos integralmente</div>
+          <div class="gi gi-ok">Sem pendências identificadas — referência do período</div>
+        </div>
+      </div>
+
+      <!-- Elisa 100% -->
+      <div class="gap-card gc-top" onclick="goToTab('ts','ts-elisa')">
+        <div class="gap-top">
+          <div class="gap-av" style="background:#0D6131;">EL</div>
+          <div class="gap-info">
+            <div class="gap-name">Elisa</div>
+            <div class="gap-role">Técnica de Segurança</div>
+          </div>
+          <div class="gap-score-col">
+            <div class="gap-score s-top">100,00%</div>
+            <div class="gap-delta d-pos">IDI Máximo</div>
+          </div>
+        </div>
+        <div class="gap-items">
+          <div class="gi gi-ok">IDI máximo — todos os itens aplicáveis conformes</div>
+          <div class="gi gi-ok">Melhor TS do período — referência do grupo</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- PROJETOS EXCLUÍDOS -->
 <div class="excl-section">
   <div class="section-title" style="font-size:1rem;color:#718096;border-color:#cbd5e0;margin-bottom:14px;">⚠️ Projetos Excluídos da Avaliação — Maio 2026</div>
@@ -1006,6 +1411,21 @@
     toggleBlock(id);
     var el = document.getElementById(id);
     if (el) setTimeout(function(){ el.scrollIntoView({behavior:'smooth',block:'start'}); }, 120);
+  }
+
+  // ---- NAVEGAÇÃO GAPS → ABA + DETALHES ----
+  function goToTab(tabName, blockId) {
+    document.querySelectorAll('.tab-content').forEach(function(el){ el.classList.remove('active'); });
+    document.querySelectorAll('.tab').forEach(function(btn){
+      btn.classList.remove('active');
+      var oc = btn.getAttribute('onclick') || '';
+      if (oc.indexOf("'" + tabName + "'") !== -1) btn.classList.add('active');
+    });
+    var tabEl = document.getElementById('tab-' + tabName);
+    if (tabEl) tabEl.classList.add('active');
+    toggleBlock(blockId);
+    var el = document.getElementById(blockId);
+    if (el) setTimeout(function(){ el.scrollIntoView({behavior:'smooth',block:'start'}); }, 180);
   }
 
   // ---- TABS ----

@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório de Status dos Projetos — Maio 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#EFF2EE;color:#1A2B1F;}
+
+  /* ---- HEADER ---- */
+  .header{background:linear-gradient(135deg,#071A0C 0%,#0D2B14 55%,#1B4332 100%);color:white;padding:36px 48px 28px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;}
+  .header-left h1{font-size:1.8rem;font-weight:700;letter-spacing:-0.5px;}
+  .header-left .subtitle{font-size:.92rem;color:#95D5B2;margin-top:5px;}
+  .meta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+  .meta-chip{background:rgba(255,255,255,.08);border-radius:4px;padding:4px 12px;font-size:.76rem;color:#B7D4C5;border:1px solid rgba(255,255,255,.12);}
+  .btn-pdf{background:#1B4332;color:white;border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:11px 20px;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .2s;white-space:nowrap;height:fit-content;margin-top:4px;}
+  .btn-pdf:hover{background:#0D2B14;}
+  .btn-pdf svg{width:16px;height:16px;}
+
+  /* ---- LEGENDA ---- */
+  .legend{background:white;padding:11px 48px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #DDE5DA;font-size:.76rem;}
+  .legend strong{color:#3D5045;margin-right:4px;}
+  .badge{display:inline-block;padding:2px 9px;border-radius:3px;font-size:.70rem;font-weight:600;white-space:nowrap;}
+  .ok     {background:#D6EDD9;color:#1B4332;}
+  .parcial{background:#FDF4DC;color:#6B4E00;}
+  .nc     {background:#F7E0E0;color:#7A1A1A;}
+  .na     {background:#E8ECE8;color:#5A6B5E;}
+  .atencao{background:#FDE9D1;color:#7A3A10;}
+
+  /* ---- IDI SECTION ---- */
+  .ide-section{padding:28px 48px;background:white;border-bottom:2px solid #DDE5DA;}
+  .ide-section h2{font-size:1rem;font-weight:700;color:#3D5045;text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px;}
+  .ide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:10px;margin-bottom:20px;}
+  .ide-card{border-radius:6px;padding:14px 16px;text-align:center;background:white;border:1px solid #DDE5DA;border-top:3px solid #A8BFB0;}
+  .ide-card .lbl{font-size:.70rem;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:#5A6B5E;min-height:2.4em;display:flex;align-items:center;justify-content:center;}
+  .ide-card .val{font-size:1.8rem;font-weight:700;margin:6px 0 2px;color:#1A2B1F;font-variant-numeric:tabular-nums;letter-spacing:-1px;font-family:'Segoe UI',system-ui,sans-serif;}
+  .ide-card .sub{font-size:.68rem;color:#8FA89A;}
+  .ide-implantador{border-top-color:#2D6A4F;}
+  .ide-implantador .val{color:#1B4332;}
+  .ide-rotina{border-top-color:#52796F;}
+  .ide-rotina .val{color:#374B42;}
+  .ide-especial{border-top-color:#40916C;}
+  .ide-especial .val{color:#1B4332;}
+  .ide-seg{border-top-color:#1B4332;}
+  .ide-seg .val{color:#0D2B14;}
+  .ide-mat{border-top-color:#A8BFB0;}
+  .ide-mat .val{color:#718096;}
+  .ide-total{background:linear-gradient(135deg,#071A0C,#1B4332);border:none;border-top:3px solid #74C69D;}
+  .ide-total .lbl{color:#95D5B2;}
+  .ide-total .val{color:white;font-size:2.2rem;font-variant-numeric:tabular-nums;letter-spacing:-1px;}
+  .ide-total .sub{color:#95D5B2;}
+  .ide-table{width:100%;border-collapse:collapse;font-size:.82rem;max-width:700px;}
+  .ide-table th{background:#F4F7F4;color:#4A5568;font-weight:700;padding:8px 14px;text-align:left;border-bottom:2px solid #DDE5DA;}
+  .ide-table td{padding:8px 14px;border-bottom:1px solid #EEF2EE;}
+  .ide-table tr:last-child td{background:#D6EDD9;font-weight:800;border-top:2px solid #2D6A4F;}
+  .ide-table .peso{text-align:center;color:#718096;}
+  .ide-table .pts{text-align:center;font-weight:700;color:#1B4332;}
+  .ide-card .ide-contrib{margin-top:8px;padding-top:8px;border-top:1px solid #DDE5DA;display:flex;flex-direction:column;align-items:center;gap:2px;}
+  .ide-card .ide-peso{font-size:.64rem;font-weight:600;color:#8FA89A;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;}
+  .ide-card .ide-pts{font-size:1rem;font-weight:800;color:#1A2B1F;white-space:nowrap;}
+  .ide-total .ide-contrib{border-top-color:rgba(255,255,255,.18);}
+  .ide-total .ide-peso{color:#95D5B2;}
+  .ide-total .ide-pts{color:white;font-size:1.1rem;}
+  .ide-equation{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;padding:12px 0 2px;border-top:1px dashed #DDE5DA;margin-top:4px;}
+  .ide-equation .eq-item{display:flex;flex-direction:column;align-items:center;gap:1px;}
+  .ide-equation .eq-pts{font-weight:700;color:#1A2B1F;font-size:.8rem;}
+  .ide-equation .eq-lbl{font-size:.60rem;color:#8FA89A;white-space:nowrap;}
+  .ide-equation .eq-op{font-size:.9rem;color:#A8BFB0;font-weight:400;line-height:1;margin-bottom:10px;}
+  .ide-equation .eq-muted .eq-pts{color:#C0CFCA;}
+  .ide-equation .eq-total-item .eq-pts{font-size:.92rem;color:#1B4332;font-weight:800;}
+  .ide-equation .eq-total-item .eq-lbl{color:#2D6A4F;font-weight:600;font-size:.64rem;}
+
+  /* ---- TABS ---- */
+  .tabs-wrap{padding:20px 48px 0;background:#EFF2EE;}
+  .tabs{display:flex;gap:4px;border-bottom:2px solid #DDE5DA;}
+  .tab{padding:10px 22px;font-size:.86rem;font-weight:600;color:#5A6B5E;cursor:pointer;border-radius:6px 6px 0 0;transition:all .2s;border:none;background:transparent;}
+  .tab.active{background:white;color:#1B4332;border:2px solid #DDE5DA;border-bottom:2px solid white;margin-bottom:-2px;}
+  .tab:hover:not(.active){background:#DDE5DA;color:#1A2B1F;}
+
+  /* ---- SECTION ---- */
+  .section{padding:28px 48px;}
+  .section-title{font-size:1.2rem;font-weight:700;color:#1A2B1F;margin-bottom:20px;padding-bottom:8px;border-bottom:3px solid #1B4332;}
+
+  /* ---- SCORE CARDS ---- */
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;margin-bottom:8px;}
+  .score-card{background:white;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);text-align:center;border-top:3px solid #1B4332;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;}
+  .score-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1);}
+  .score-card .rank{position:absolute;top:10px;left:12px;font-size:.66rem;font-weight:700;color:#8FA89A;background:#F4F7F4;border-radius:4px;padding:1px 6px;}
+  .score-card .name{font-weight:700;font-size:1rem;color:#1A2B1F;margin-top:4px;}
+  .score-card .role{font-size:.68rem;color:#5A6B5E;margin-top:1px;text-transform:uppercase;letter-spacing:.4px;}
+  .score-card .score{font-size:2rem;font-weight:800;margin:8px 0 2px;}
+  .score-card .projects{font-size:.70rem;color:#718096;}
+  .score-card .click-hint{font-size:.63rem;color:#8FA89A;margin-top:6px;}
+  .score-excelente{color:#1B4332;}
+  .score-bom      {color:#2D6A4F;}
+  .score-regular  {color:#895A00;}
+  .score-baixo    {color:#922B21;}
+
+  /* ---- PERSON BLOCK ---- */
+  .person-block{background:white;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:16px;overflow:hidden;scroll-margin-top:80px;}
+  .person-header{background:#0D2B14;color:white;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+  .person-header:hover{background:#071A0C;}
+  .person-header h3{font-size:1rem;font-weight:700;}
+  .person-header .info{font-size:.74rem;color:#95D5B2;margin-top:2px;}
+  .ph-right{display:flex;align-items:center;gap:12px;}
+  .person-score-badge{background:white;border-radius:6px;padding:5px 12px;font-weight:800;font-size:1.1rem;min-width:80px;text-align:center;}
+  .toggle-icon{font-size:1.2rem;color:#95D5B2;transition:transform .25s;line-height:1;}
+  .toggle-icon.open{transform:rotate(180deg);}
+  .person-body{display:none;}
+  .person-body.open{display:block;}
+  .person-note{padding:10px 20px;font-size:.78rem;border-bottom:1px solid #EEF2EE;}
+  .note-ok   {background:#ECF6EE;color:#1B4332;}
+  .note-warn {background:#FEFAED;color:#6B4E00;}
+  .note-crit {background:#FDF2F2;color:#7A1A1A;}
+  .project-table-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:.74rem;}
+  th{background:#F4F7F4;color:#3D5045;font-weight:700;padding:8px 10px;text-align:left;white-space:nowrap;border-bottom:2px solid #DDE5DA;}
+  td{padding:7px 10px;border-bottom:1px solid #EEF2EE;vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#F4F7F4;}
+  td.proj{font-weight:600;color:#2D3748;max-width:240px;line-height:1.3;}
+  td.proj small{display:block;font-weight:400;color:#5A6B5E;font-size:.68rem;margin-top:1px;}
+
+  /* ---- EXCLUDED TABLE ---- */
+  .excl-section{background:#F4F7F4;padding:24px 48px;}
+  .excl-table{width:100%;font-size:.78rem;background:white;border-radius:6px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .excl-table th{background:#EEF2EE;color:#3D5045;font-weight:700;padding:9px 13px;text-align:left;}
+  .excl-table td{padding:7px 13px;border-bottom:1px solid #F4F7F4;}
+  .excl-table tr:nth-child(even) td{background:#F4F7F4;}
+
+  /* ---- FOOTER ---- */
+  .footer{background:#0D2B14;color:#95D5B2;text-align:center;padding:16px;font-size:.76rem;}
+
+  /* ---- HIDDEN SECTIONS ---- */
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+
+  /* ====== PRINT / PDF ====== */
+  @media print{
+    body{background:white;}
+    .btn-pdf,.tabs-wrap,.tab{display:none!important;}
+    .tab-content{display:block!important;}
+    .person-body{display:block!important;}
+    .header{padding:24px 32px 20px;}
+    .section{padding:18px 32px;}
+    .ide-section{padding:18px 32px;}
+    .excl-section{padding:18px 32px;}
+    /* Permite que blocos grandes fluam naturalmente entre páginas */
+    .person-block{page-break-inside:auto;box-shadow:none;border:1px solid #e2e8f0;margin-bottom:12px;}
+    /* Impede que o cabeçalho da pessoa fique sozinho no final de uma página */
+    .person-header{page-break-after:avoid;page-break-inside:avoid;}
+    /* Mantém a nota de análise junto ao que vem antes */
+    .person-note{page-break-after:avoid;page-break-inside:avoid;}
+    .score-card{box-shadow:none;border:1px solid #e2e8f0;}
+    .section-title{page-break-after:avoid;}
+    .cards-grid{page-break-inside:avoid;}
+    h2,h3{page-break-after:avoid;}
+    .ide-grid{page-break-inside:avoid;}
+    /* Tabelas fluem entre páginas, mas nunca quebra dentro de uma linha */
+    .project-table-wrap table{page-break-inside:auto;}
+    tr{page-break-inside:avoid;page-break-after:auto;}
+    thead{display:table-header-group;}
+    /* Quebras forçadas apenas entre grandes seções */
+    .section.implantadores-section{page-break-before:always;}
+    .section.ts-section{page-break-before:always;}
+    .section.plan-section{page-break-before:always;}
+    .excl-section{page-break-before:always;}
+    @page{margin:16mm 12mm;}
+  }
+
+  /* ===== COLUNAS POR FUNÇÃO ===== */
+  /* Implantadores: exibe Projeto, RDO, Medição, Pl.Ataque, Pl.Seg., Fotos, LV, Agenda Semanal — remove cols 9-12 */
+  #tab-implantadores table th:nth-child(9),
+  #tab-implantadores table td:nth-child(9),
+  #tab-implantadores table th:nth-child(10),
+  #tab-implantadores table td:nth-child(10),
+  #tab-implantadores table th:nth-child(11),
+  #tab-implantadores table td:nth-child(11),
+  #tab-implantadores table th:nth-child(12),
+  #tab-implantadores table td:nth-child(12) { display: none; }
+
+  /* TSTs: exibe apenas Projeto, Pl. Ataque(4), Pl. Seg.(5), AST(12) */
+  #tab-ts table th:nth-child(2),
+  #tab-ts table td:nth-child(2),
+  #tab-ts table th:nth-child(3),
+  #tab-ts table td:nth-child(3),
+  #tab-ts table th:nth-child(6),
+  #tab-ts table td:nth-child(6),
+  #tab-ts table th:nth-child(7),
+  #tab-ts table td:nth-child(7),
+  #tab-ts table th:nth-child(8),
+  #tab-ts table td:nth-child(8),
+  #tab-ts table th:nth-child(9),
+  #tab-ts table td:nth-child(9),
+  #tab-ts table th:nth-child(10),
+  #tab-ts table td:nth-child(10),
+  #tab-ts table th:nth-child(11),
+  #tab-ts table td:nth-child(11) { display: none; }
+
+  /* Tabela KPI planejadores */
+  .kpi-table{width:100%;border-collapse:collapse;font-size:.74rem;}
+  .kpi-table th{background:#f7fafc;color:#4a5568;font-weight:700;padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;}
+  .kpi-table td{padding:7px 10px;border-bottom:1px solid #f0f2f5;vertical-align:middle;}
+  .kpi-table tr:last-child td{border-bottom:none;}
+  .kpi-table .kpi-name{font-weight:600;color:#2d3748;}
+  .kpi-table .kpi-val{text-align:center;font-weight:700;color:#718096;}
+  .kpi-table .kpi-per{text-align:center;color:#718096;font-size:.68rem;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header" id="report-top">
+  <div class="header-left">
+    <h1>IDI - Indicador de Desempenho da Implantação - Maio 2026</h1>
+    <div class="subtitle">Conferência de Documentação · Implantadores, Planejadores e Técnicos de Segurança</div>
+    <div class="meta">
+      <span class="meta-chip">📅 Competência: Maio/2026</span>
+      <span class="meta-chip">🔍 Auditoria: 02/06 a 08/06/2026</span>
+      <span class="meta-chip">📋 22 projetos avaliados</span>
+      <span class="meta-chip">👷 8 Implantadores</span>
+      <span class="meta-chip">📐 4 Planejadores</span>
+      <span class="meta-chip">🦺 5 TSs</span>
+    </div>
+  </div>
+  <button class="btn-pdf" onclick="gerarPDF()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+    Gerar PDF
+  </button>
+</div>
+
+<!-- LEGENDA -->
+<div class="legend">
+  <strong>Legenda dos itens de documentação:</strong>
+  <span class="badge ok">OK — Conforme</span>
+  <span class="badge atencao">OK c/ ressalva</span>
+  <span class="badge parcial">PARCIAL — Vazia / Desatualizado / Incompleto</span>
+  <span class="badge nc">NÃO CONFORME — Ausente / Fora do prazo</span>
+  <span class="badge na">N/A — Não aplicável</span>
+</div>
+
+<!-- IDI -->
+<div class="ide-section">
+  <h2>Média do IDI</h2>
+  <div class="ide-grid">
+    <div class="ide-card ide-implantador">
+      <div class="lbl">Média Implantadores</div>
+      <div class="val">57,5%</div>
+      <div class="ide-contrib">
+        <span class="ide-peso">Peso 25</span>
+        <span class="ide-pts">14,38 pts</span>
+      </div>
+    </div>
+    <div class="ide-card ide-rotina">
+      <div class="lbl">Planejamento de Rotina</div>
+      <div class="val">52,7%</div>
+      <div class="ide-contrib">
+        <span class="ide-peso">Peso 25</span>
+        <span class="ide-pts">13,18 pts</span>
+      </div>
+    </div>
+    <div class="ide-card ide-especial">
+      <div class="lbl">Planejamento Especial</div>
+      <div class="val">85,8%</div>
+      <div class="ide-contrib">
+        <span class="ide-peso">Peso 25</span>
+        <span class="ide-pts">21,46 pts</span>
+      </div>
+    </div>
+    <div class="ide-card ide-seg">
+      <div class="lbl">Média Segurança</div>
+      <div class="val">88,6%</div>
+      <div class="ide-contrib">
+        <span class="ide-peso">Peso 25</span>
+        <span class="ide-pts">22,14 pts</span>
+      </div>
+    </div>
+    <div class="ide-card ide-mat">
+      <div class="lbl">Média Materiais</div>
+      <div class="val" style="color:#A8BFB0;">—</div>
+      <div class="ide-contrib">
+        <span class="ide-peso">Peso 0</span>
+        <span class="ide-pts" style="color:#C0CFCA;">0,00 pts</span>
+      </div>
+    </div>
+    <div class="ide-card ide-total">
+      <div class="lbl">IDI IMPLANTAÇÃO</div>
+      <div class="val">71%</div>
+      <div class="ide-contrib">
+        <span class="ide-peso">Peso 100</span>
+        <span class="ide-pts">71,16 pts</span>
+      </div>
+    </div>
+  </div>
+  <div class="ide-equation">
+    <div class="eq-item"><span class="eq-pts">14,38</span><span class="eq-lbl">Implantadores</span></div>
+    <span class="eq-op">+</span>
+    <div class="eq-item"><span class="eq-pts">13,18</span><span class="eq-lbl">Rotina</span></div>
+    <span class="eq-op">+</span>
+    <div class="eq-item"><span class="eq-pts">21,46</span><span class="eq-lbl">Especial</span></div>
+    <span class="eq-op">+</span>
+    <div class="eq-item"><span class="eq-pts">22,14</span><span class="eq-lbl">Segurança</span></div>
+    <span class="eq-op">+</span>
+    <div class="eq-item eq-muted"><span class="eq-pts">0,00</span><span class="eq-lbl">Materiais (n/c)</span></div>
+    <span class="eq-op">=</span>
+    <div class="eq-item eq-total-item"><span class="eq-pts">71,16 pts</span><span class="eq-lbl">IDI Final · Maio 2026</span></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('implantadores',this)">👷 Implantadores</button>
+    <button class="tab" onclick="switchTab('planejadores',this)">📐 Planejadores</button>
+    <button class="tab" onclick="switchTab('ts',this)">🦺 Técnicos de Segurança</button>
+  </div>
+</div>
+
+<!-- ==================== IMPLANTADORES ==================== -->
+<div id="tab-implantadores" class="tab-content active">
+
+  <div class="section">
+    <div class="section-title">👷 Implantadores — Ranking IDI · Maio 2026</div>
+    <div class="cards-grid">
+      <div class="score-card" onclick="toggleBlock('imp-filipe')">
+        <div class="rank">#1</div>
+        <div class="name">Filipe</div><div class="role">Implantador</div>
+        <div class="score score-excelente">81,83%</div>
+        <div class="projects">2 projetos</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('imp-gleison')">
+        <div class="rank">#2</div>
+        <div class="name">Gleison</div><div class="role">Implantador</div>
+        <div class="score score-bom">75,45%</div>
+        <div class="projects">1 projeto</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('imp-jaco')">
+        <div class="rank">#3</div>
+        <div class="name">Jacó</div><div class="role">Implantador</div>
+        <div class="score score-bom">67,08%</div>
+        <div class="projects">2 projetos</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('imp-geraldo')">
+        <div class="rank">#4</div>
+        <div class="name">Geraldo</div><div class="role">Implantador</div>
+        <div class="score score-bom">60,83%</div>
+        <div class="projects">2 projetos</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('imp-tulho')">
+        <div class="rank">#5</div>
+        <div class="name">Tulho</div><div class="role">Implantador</div>
+        <div class="score score-regular">53,86%</div>
+        <div class="projects">3 projetos</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('imp-toni')">
+        <div class="rank">#6</div>
+        <div class="name">Toni</div><div class="role">Implantador</div>
+        <div class="score score-baixo">41,67%</div>
+        <div class="projects">3 projetos</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('imp-gerlan')">
+        <div class="rank">#7</div>
+        <div class="name">Gerlan</div><div class="role">Implantador</div>
+        <div class="score score-baixo">40,60%</div>
+        <div class="projects">4 projetos</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('imp-gabriel')">
+        <div class="rank">#8</div>
+        <div class="name">Gabriel</div><div class="role">Implantador</div>
+        <div class="score score-baixo">38,72%</div>
+        <div class="projects">5 projetos</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section implantadores-section" style="padding-top:0;">
+
+    <!-- FILIPE -->
+    <div class="person-block" id="imp-filipe">
+      <div class="person-header" onclick="toggleBlock('imp-filipe')">
+        <div><h3>Filipe — Implantador Líder</h3><div class="info">2 projetos · Consultor: Bárbara · Contratadas: Macro Engenharia, Coesul</div></div>
+        <div class="ph-right">
+          <div class="person-score-badge score-excelente">81,83%</div>
+          <span class="toggle-icon">▾</span>
+        </div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-warn"><strong>Pontos de atenção:</strong> No projeto da Acessibilidade, RDO vazia, Cronograma e Medição desatualizados (referência Abril), ATA de Reunião, RSP e AST de Maio ausentes. Central de Resíduos com desempenho excelente, puxando a nota para cima.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Contratada</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Agenda Semanal</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr>
+            <td class="proj">Acessibilidade área adm. — Fase 3<small>Macro Engenharia · TS: Agelem</small></td>
+            <td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Abril</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge parcial">Abril</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">02/06 14:42</span></td><td><span class="badge nc">Não tem Maio</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Central de Resíduos — Santa Isabel<small>Coesul · TS: Elisa</small></td>
+            <td><span class="badge na">N/A</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 14:53</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- GLEISON -->
+    <div class="person-block" id="imp-gleison">
+      <div class="person-header" onclick="toggleBlock('imp-gleison')">
+        <div><h3>Gleison — Implantador Líder</h3><div class="info">1 projeto · Consultor: Mário · Contratada: Ducatti</div></div>
+        <div class="ph-right">
+          <div class="person-score-badge score-bom">75,45%</div>
+          <span class="toggle-icon">▾</span>
+        </div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-ok"><strong>Destaques positivos:</strong> Excelente desempenho no Instituto CMPC. Única pendência: LV não entregue e RDO incompleta (faltam 5 arquivos). Todos os demais itens aplicáveis conformes.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Contratada</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Agenda Semanal</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr>
+            <td class="proj">Instituto CMPC<small>Ducatti · TS: Agelem</small></td>
+            <td><span class="badge parcial">Faltam 5</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">NÃO</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">03/06 09:18</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- JACÓ -->
+    <div class="person-block" id="imp-jaco">
+      <div class="person-header" onclick="toggleBlock('imp-jaco')">
+        <div><h3>Jacó — Implantador Líder</h3><div class="info">2 projetos · Consultor: Winston · Contratadas: Fibrasul, Valmet</div></div>
+        <div class="ph-right">
+          <div class="person-score-badge score-bom">67,08%</div>
+          <span class="toggle-icon">▾</span>
+        </div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-warn"><strong>Pontos de atenção:</strong> Secadores G1: RDO sem arquivos de Maio e AST vazia. Difusores TB2/TB3: RDO com evidência de não envio registrada (ressalva), AST fora do prazo, LV vazia nos 2 projetos.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Contratada</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Agenda Semanal</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr>
+            <td class="proj">Aumento capacidade secadores — G1<small>Fibrasul · TS: Cristielen</small></td>
+            <td><span class="badge nc">Sem arq. Maio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">08/06 15:53</span></td><td><span class="badge parcial">Vazia</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Difusores TB2 e TB3 — 1ª Fase<small>Valmet · TS: Maria</small></td>
+            <td><span class="badge atencao">OK c/ ressalva</span></td><td><span class="badge na">Não houve</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">03/06 16:38</span></td><td><span class="badge nc">Fora do prazo</span></td>
+          </tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- GERALDO -->
+    <div class="person-block" id="imp-geraldo">
+      <div class="person-header" onclick="toggleBlock('imp-geraldo')">
+        <div><h3>Geraldo — Implantador Líder</h3><div class="info">2 projetos · Consultor: Felipe · Contratadas: Mastermec/Rioprel, Mastermec</div></div>
+        <div class="ph-right">
+          <div class="person-score-badge score-bom">60,83%</div>
+          <span class="toggle-icon">▾</span>
+        </div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-warn"><strong>Pontos de atenção:</strong> Pintura da Cloro Soda quase perfeita — Medição ausente é a única NC. ETE G1 com RDO incompleta (faltam 11 arquivos), Plano de Ataque, Fotos, LV e Medição ainda com pastas vazias — documentação a regularizar.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Contratada</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Agenda Semanal</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr>
+            <td class="proj">ETE G1 — Revamp / Grades Mecanizadas<small>Mastermec / Rioprel · TS: Agelem</small></td>
+            <td><span class="badge parcial">Faltam 11</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 16:52</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Pintura da Cloro Soda — Planta Química G1<small>Mastermec · TS: Cristielen</small></td>
+            <td><span class="badge ok">OK</span></td><td><span class="badge nc">NÃO</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 17:00</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- TULHO -->
+    <div class="person-block" id="imp-tulho">
+      <div class="person-header" onclick="toggleBlock('imp-tulho')">
+        <div><h3>Tulho — Implantador Líder</h3><div class="info">3 projetos · Consultores: Machado, Winston, Stahl · Contratadas: Mastermec, SR Soluções</div></div>
+        <div class="ph-right">
+          <div class="person-score-badge score-regular">53,86%</div>
+          <span class="toggle-icon">▾</span>
+        </div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-warn"><strong>Pontos de atenção:</strong> AST vazia nos 3 projetos. Medição ausente em 2 projetos (LBF e Kamyr). ATA ausente no projeto LBF. Cronograma e RSP ausentes no Kamyr. RDO incompleta no SR Soluções (faltam 3). Projetos LBF e Kamyr ainda em fase PG para RDO.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Contratada</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Agenda Semanal</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr>
+            <td class="proj">Utilização LBF — Chuveiros canaletas smelt CR1<small>Mastermec · TS: Cristielen</small></td>
+            <td><span class="badge na">Em PG</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">08/06 16:07</span></td><td><span class="badge parcial">Vazia</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Adequação sistema água de serviço — Fase 3/8<small>SR Soluções · TS: Agelem</small></td>
+            <td><span class="badge parcial">Faltam 3</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">08/06 16:25</span></td><td><span class="badge parcial">Vazia</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Chuveiros de alta pressão do Kamyr<small>Mastermec · TS: Cristielen</small></td>
+            <td><span class="badge na">Em PG</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">08/06 16:31</span></td><td><span class="badge parcial">Vazia</span></td>
+          </tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- TONI -->
+    <div class="person-block" id="imp-toni">
+      <div class="person-header" onclick="toggleBlock('imp-toni')">
+        <div><h3>Toni — Implantador Líder</h3><div class="info">3 projetos · Consultor: Stahl · Contratadas: Estel, SR Soluções, Rioprel</div></div>
+        <div class="ph-right">
+          <div class="person-score-badge score-baixo">41,67%</div>
+          <span class="toggle-icon">▾</span>
+        </div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-crit"><strong>Atenção crítica:</strong> Penúltima posição entre os implantadores. Automação G1 com 7 dos 10 itens como Não Conforme — Medição, Fotos, LV, ATA, Cronograma, RSP ausentes, RDO vazia. Projeto Gabinetes com múltiplas ausências de Maio. Apenas o Plano de Ataque se manteve consistente nos 3 projetos.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Contratada</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Agenda Semanal</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr>
+            <td class="proj">Instalar polarizador retificador T71 — Aditivo<small>Estel · TS: Cristielen</small></td>
+            <td><span class="badge ok">OK</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">08/06 16:54</span></td><td><span class="badge parcial">Vazia</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Gestão de Risco: Gabinetes inversores G1<small>SR Soluções · TS: Cristielen</small></td>
+            <td><span class="badge nc">Não tem Maio</span></td><td><span class="badge parcial">Vazio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge na">Em PG</span></td><td><span class="badge na">Em PG</span></td><td><span class="badge ok">08/06 17:00</span></td><td><span class="badge nc">Não tem Maio</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Atualização Tecnológica — Automação G1<small>Rioprel · TS: Cristielen</small></td>
+            <td><span class="badge parcial">Vazia</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">08/06 17:05</span></td><td><span class="badge parcial">Vazia</span></td>
+          </tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- GERLAN -->
+    <div class="person-block" id="imp-gerlan">
+      <div class="person-header" onclick="toggleBlock('imp-gerlan')">
+        <div><h3>Gerlan — Implantador Líder</h3><div class="info">4 projetos · Consultores: Jorge, Machado · Contratadas: Plasterm, Mastermec</div></div>
+        <div class="ph-right">
+          <div class="person-score-badge score-baixo">40,60%</div>
+          <span class="toggle-icon">▾</span>
+        </div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-crit"><strong>Atenção:</strong> Melhoria de Limpeza com Medição, ATA, Cronograma e RSP ausentes — evidência de não envio registrada. Ponte Rolante com RDO fora do prazo e RSP com evidência de não envio. LV vazia em 3 dos 4 projetos. RDO fora do prazo ou incompleta em 3 projetos.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Contratada</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Agenda Semanal</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr>
+            <td class="proj">Defapa — Passador de Ponta<small>Plasterm · TS: Agelem</small></td>
+            <td><span class="badge parcial">Faltam 5</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">08/06 20:36</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Novo sistema recirculação de licor (ATT Caldeira)<small>Plasterm · TS: Cristielen</small></td>
+            <td><span class="badge na">N/A</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">08/06 20:45</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Melhoria limpeza duto de cinzas — Eco 1/CR2<small>Mastermec · TS: Cristielen</small></td>
+            <td><span class="badge parcial">Faltam 3</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Evid. não envio</span></td><td><span class="badge nc">Evid. não envio</span></td><td><span class="badge ok">08/06 21:16</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Revitalização da Ponte Rolante MS2<small>Plasterm · TS: Agelem</small></td>
+            <td><span class="badge nc">Fora do prazo</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Evid. não envio</span></td><td><span class="badge ok">08/06 21:23</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- GABRIEL -->
+    <div class="person-block" id="imp-gabriel">
+      <div class="person-header" onclick="toggleBlock('imp-gabriel')">
+        <div><h3>Gabriel — Implantador Líder</h3><div class="info">5 projetos · Consultores: Bárbara, Jorge, Everton, Honório · Contratadas: Premold, Acesso, Aquafender</div></div>
+        <div class="ph-right">
+          <div class="person-score-badge score-baixo">38,72%</div>
+          <span class="toggle-icon">▾</span>
+        </div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-crit"><strong>Atenção — última posição:</strong> RDO incompleta em 3 dos 5 projetos. Calçadas do Parque Linear com todas as pastas vazias. Defensas com Fotos fora do prazo e Cronograma sem conteúdo de Maio. LV vazia em 3 projetos. AST ausente em 2 projetos. Medição e RDO do projeto Calçadas sem nenhum dado.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Contratada</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Agenda Semanal</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr>
+            <td class="proj">Nova rede esgoto sanitário — Fase 3/4<small>Premold · TS: Agelem</small></td>
+            <td><span class="badge parcial">Faltam 5</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 15:47</span></td><td><span class="badge nc">Não tem Maio</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Calçadas do Parque Linear<small>Premold · TS: Cristielen</small></td>
+            <td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 16:19</span></td><td><span class="badge nc">Não tem Maio</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Defapa — Condições Seg. Estruturais<small>Premold · TS: Thainá</small></td>
+            <td><span class="badge parcial">Faltam 6</span></td><td><span class="badge parcial">Vazia Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 15:57</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="proj">NR-35 — Linhas de Vida (Fase 4/5)<small>Acesso · TS: Thainá</small></td>
+            <td><span class="badge parcial">Faltam 5</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 16:06</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="proj">Instalação de Defensas — Guaíba e Pelotas<small>Aquafender · TS: Cristielen</small></td>
+            <td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">Fora do prazo</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Não contém Maio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 16:11</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+        </table></div>
+      </div>
+    </div>
+
+  </div><!-- /implantadores section -->
+</div><!-- /tab-implantadores -->
+
+<!-- ==================== PLANEJADORES ==================== -->
+<div id="tab-planejadores" class="tab-content">
+  <div class="section plan-section">
+    <div class="section-title">📐 Planejadores — Ranking IDI · Maio 2026</div>
+
+    <!-- ROTINA -->
+    <div style="font-size:.78rem;font-weight:700;color:#374B42;margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px;border-left:3px solid #52796F;padding-left:10px;">Planejamento de Rotina</div>
+    <div class="cards-grid" style="max-width:240px;margin-bottom:24px;">
+      <div class="score-card" onclick="toggleBlock('plan-alcides')" style="border-top-color:#52796F;">
+        <div class="rank">#1</div>
+        <div class="name">Alcides</div><div class="role">Rotina</div>
+        <div class="score score-regular">52,73%</div>
+        <div class="projects">IDI Rotina</div>
+        <div class="click-hint">▼ ver detalhes</div>
+      </div>
+    </div>
+
+    <!-- ESPECIAL -->
+    <div style="font-size:.78rem;font-weight:700;color:#1B4332;margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px;border-left:3px solid #2D6A4F;padding-left:10px;">Planejamento de Projetos Especiais</div>
+    <div class="cards-grid" style="max-width:600px;">
+      <div class="score-card" onclick="toggleBlock('plan-daniel')" style="border-top-color:#2D6A4F;">
+        <div class="rank">#1</div>
+        <div class="name">Daniel</div><div class="role">Especial</div>
+        <div class="score score-excelente">100,00%</div>
+        <div class="projects">IDI Máximo</div>
+        <div class="click-hint">▼ ver detalhes</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('plan-pedro')" style="border-top-color:#2D6A4F;">
+        <div class="rank">#2</div>
+        <div class="name">Pedro</div><div class="role">Especial</div>
+        <div class="score score-excelente">90,00%</div>
+        <div class="projects">—</div>
+        <div class="click-hint">▼ ver detalhes</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('plan-fernando')" style="border-top-color:#2D6A4F;">
+        <div class="rank">#3</div>
+        <div class="name">Fernando</div><div class="role">Especial</div>
+        <div class="score score-bom">67,50%</div>
+        <div class="projects">—</div>
+        <div class="click-hint">▼ ver detalhes</div>
+      </div>
+    </div>
+
+    <div style="height:20px;"></div>
+
+    <!-- ALCIDES -->
+    <div class="person-block" id="plan-alcides">
+      <div class="person-header" onclick="toggleBlock('plan-alcides')" style="background:#374B42;">
+        <div><h3>Alcides — Planejador de Rotina</h3><div class="info">IDI 52,73% · Planejamento de Rotina</div></div>
+        <div class="ph-right"><div class="person-score-badge score-regular">52,73%</div><span class="toggle-icon">▾</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-warn" style="padding:14px 20px;"><strong>Pontos de atenção:</strong> IDI de 52,73% no Planejamento de Rotina — abaixo da meta de 70%. Agenda semanal e Cronograma com menos da metade das entregas esperadas. RSP também abaixo do esperado. HHT e Programação semanal foram os únicos itens atingidos.</div>
+        <div class="project-table-wrap" style="padding:0 0 12px;">
+          <table class="kpi-table">
+            <tr><th>KPI</th><th>Periodicidade</th><th>Meta (UN)</th><th>Realizado</th><th>Status</th></tr>
+            <tr><td class="kpi-name">Agenda semanal de projetos — Por empresa</td><td>semanal</td><td class="kpi-val">88</td><td class="kpi-val">34</td><td><span class="badge nc">NÃO CONFORME — 34 de 88</span></td></tr>
+            <tr><td class="kpi-name">Cronograma na pasta (executivo)</td><td>semanal</td><td class="kpi-val">88</td><td class="kpi-val">48</td><td><span class="badge parcial">PARCIAL — 48 de 88</span></td></tr>
+            <tr><td class="kpi-name">Envio do HHT</td><td>mensal</td><td class="kpi-val">1</td><td class="kpi-val">1</td><td><span class="badge ok">OK — 1 de 1</span></td></tr>
+            <tr><td class="kpi-name">RSP na pasta</td><td>semanal</td><td class="kpi-val">88</td><td class="kpi-val">48</td><td><span class="badge parcial">PARCIAL — 48 de 88</span></td></tr>
+            <tr><td class="kpi-name">Programação semanal</td><td>semanal</td><td class="kpi-val">4</td><td class="kpi-val">5</td><td><span class="badge ok">OK — 5 de 4</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="person-block" id="plan-daniel">
+      <div class="person-header" onclick="toggleBlock('plan-daniel')" style="background:#1B4332;">
+        <div><h3>Daniel — Planejador Especial</h3><div class="info">IDI Máximo no período · Planejamento Especial</div></div>
+        <div class="ph-right"><div class="person-score-badge score-excelente">100,00%</div><span class="toggle-icon">▾</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-ok" style="padding:14px 20px;"><strong>Destaque positivo:</strong> IDI máximo — 100% atingido em Maio/2026. Todos os critérios de planejamento especial foram atendidos integralmente.</div>
+        <div class="project-table-wrap" style="padding:0 0 12px;">
+          <table class="kpi-table">
+            <tr><th>KPI</th><th>Periodicidade</th><th>Meta (UN)</th><th>Realizado</th><th>Status</th></tr>
+            <tr><td class="kpi-name">Agenda semanal do projeto especial</td><td>semanal</td><td class="kpi-val">4</td><td class="kpi-val">4</td><td><span class="badge ok">OK — 4 de 4</span></td></tr>
+            <tr><td class="kpi-name">Cronograma na pasta (executivo)</td><td>semanal</td><td class="kpi-val">4</td><td class="kpi-val">4</td><td><span class="badge ok">OK — 4 de 4</span></td></tr>
+            <tr><td class="kpi-name">Envio do HHT diário</td><td>mensal</td><td class="kpi-val">22</td><td class="kpi-val">22</td><td><span class="badge ok">OK — 22 de 22</span></td></tr>
+            <tr><td class="kpi-name">RSP na pasta</td><td>semanal</td><td class="kpi-val">4</td><td class="kpi-val">4</td><td><span class="badge ok">OK — 4 de 4</span></td></tr>
+            <tr><td class="kpi-name">Envio de relatório mensal</td><td>mensal</td><td class="kpi-val">4</td><td class="kpi-val">4</td><td><span class="badge ok">OK — 4 de 4</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="person-block" id="plan-pedro">
+      <div class="person-header" onclick="toggleBlock('plan-pedro')" style="background:#1B4332;">
+        <div><h3>Pedro — Planejador Especial</h3><div class="info">IDI 90,00% · Planejamento Especial</div></div>
+        <div class="ph-right"><div class="person-score-badge score-excelente">90,00%</div><span class="toggle-icon">▾</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-ok" style="padding:14px 20px;"><strong>Destaque positivo:</strong> IDI de 90% no período — desempenho excelente. Pendência: 1 semana da agenda semanal não enviada. Demais itens integralmente atendidos.</div>
+        <div class="project-table-wrap" style="padding:0 0 12px;">
+          <table class="kpi-table">
+            <tr><th>KPI</th><th>Periodicidade</th><th>Meta (UN)</th><th>Realizado</th><th>Status</th></tr>
+            <tr><td class="kpi-name">Agenda semanal do projeto especial</td><td>semanal</td><td class="kpi-val">4</td><td class="kpi-val">3</td><td><span class="badge parcial">PARCIAL — 3 de 4</span></td></tr>
+            <tr><td class="kpi-name">Cronograma na pasta (executivo)</td><td>semanal</td><td class="kpi-val">4</td><td class="kpi-val">4</td><td><span class="badge ok">OK — 4 de 4</span></td></tr>
+            <tr><td class="kpi-name">Envio do HHT diário</td><td>mensal</td><td class="kpi-val">22</td><td class="kpi-val">22</td><td><span class="badge ok">OK — 22 de 22</span></td></tr>
+            <tr><td class="kpi-name">RSP na pasta</td><td>semanal</td><td class="kpi-val">4</td><td class="kpi-val">4</td><td><span class="badge ok">OK — 4 de 4</span></td></tr>
+            <tr><td class="kpi-name">Envio de relatório mensal</td><td>mensal</td><td class="kpi-val">4</td><td class="kpi-val">4</td><td><span class="badge ok">OK — 4 de 4</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="person-block" id="plan-fernando">
+      <div class="person-header" onclick="toggleBlock('plan-fernando')" style="background:#1B4332;">
+        <div><h3>Fernando — Planejador Especial</h3><div class="info">IDI 67,50% · Planejamento Especial</div></div>
+        <div class="ph-right"><div class="person-score-badge score-bom">67,50%</div><span class="toggle-icon">▾</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-warn" style="padding:14px 20px;"><strong>Pontos de atenção:</strong> IDI de 67,5% — abaixo da meta de 70% e abaixo dos demais planejadores especiais. Agenda semanal com apenas 50% de entrega (2 de 4). Cronograma e RSP parciais (3 de 4). HHT e relatório mensal ok.</div>
+        <div class="project-table-wrap" style="padding:0 0 12px;">
+          <table class="kpi-table">
+            <tr><th>KPI</th><th>Periodicidade</th><th>Meta (UN)</th><th>Realizado</th><th>Status</th></tr>
+            <tr><td class="kpi-name">Agenda semanal do projeto especial</td><td>semanal</td><td class="kpi-val">4</td><td class="kpi-val">2</td><td><span class="badge nc">NÃO CONFORME — 2 de 4</span></td></tr>
+            <tr><td class="kpi-name">Cronograma na pasta (executivo)</td><td>semanal</td><td class="kpi-val">4</td><td class="kpi-val">3</td><td><span class="badge parcial">PARCIAL — 3 de 4</span></td></tr>
+            <tr><td class="kpi-name">Envio do HHT diário</td><td>mensal</td><td class="kpi-val">22</td><td class="kpi-val">22</td><td><span class="badge ok">OK — 22 de 22</span></td></tr>
+            <tr><td class="kpi-name">RSP na pasta</td><td>semanal</td><td class="kpi-val">4</td><td class="kpi-val">3</td><td><span class="badge parcial">PARCIAL — 3 de 4</span></td></tr>
+            <tr><td class="kpi-name">Envio de relatório mensal</td><td>mensal</td><td class="kpi-val">4</td><td class="kpi-val">4</td><td><span class="badge ok">OK — 4 de 4</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== TSs ==================== -->
+<div id="tab-ts" class="tab-content">
+  <div class="section ts-section">
+    <div class="section-title">🦺 Técnicos de Segurança — Ranking IDI · Maio 2026</div>
+    <div class="cards-grid">
+      <div class="score-card" onclick="toggleBlock('ts-elisa')" style="border-top-color:#1B4332;">
+        <div class="rank">#1</div>
+        <div class="name">Elisa</div><div class="role">TS</div>
+        <div class="score score-excelente">100,00%</div>
+        <div class="projects">1 projeto</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('ts-agelem')" style="border-top-color:#1B4332;">
+        <div class="rank">#2</div>
+        <div class="name">Agelem</div><div class="role">TS</div>
+        <div class="score score-excelente">91,43%</div>
+        <div class="projects">8 projetos</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('ts-thaina')" style="border-top-color:#1B4332;">
+        <div class="rank">#3</div>
+        <div class="name">Thainá</div><div class="role">TS</div>
+        <div class="score score-excelente">85,00%</div>
+        <div class="projects">2 projetos</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('ts-maria')" style="border-top-color:#1B4332;">
+        <div class="rank">#3</div>
+        <div class="name">Maria</div><div class="role">TS</div>
+        <div class="score score-excelente">85,00%</div>
+        <div class="projects">1 projeto</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+      <div class="score-card" onclick="toggleBlock('ts-cristielen')" style="border-top-color:#1B4332;">
+        <div class="rank">#5</div>
+        <div class="name">Cristielen</div><div class="role">TS</div>
+        <div class="score score-excelente">81,36%</div>
+        <div class="projects">11 projetos</div>
+        <div class="click-hint">▼ ver projetos</div>
+      </div>
+    </div>
+    <p style="font-size:.78rem;color:#718096;margin-top:8px;">Juliane: sem projetos iniciados em Maio/2026 — não avaliada.</p>
+
+    <div style="height:20px;"></div>
+
+    <!-- ELISA -->
+    <div class="person-block" id="ts-elisa">
+      <div class="person-header" onclick="toggleBlock('ts-elisa')" style="background:#0D2B14;">
+        <div><h3>Elisa — Técnico de Segurança</h3><div class="info">1 projeto · Implantador: Filipe · Contratada: Coesul</div></div>
+        <div class="ph-right"><div class="person-score-badge score-excelente">100,00%</div><span class="toggle-icon">▾</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-ok"><strong>Destaque positivo:</strong> IDI máximo — todos os itens aplicáveis do Central de Resíduos conformes. Melhor TS do período.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Implantador</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Ata Reunião</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr>
+            <td class="proj">Central de Resíduos — Santa Isabel<small>Coesul · Implantador: Filipe</small></td>
+            <td><span class="badge na">N/A</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 14:53</span></td><td><span class="badge ok">OK</span></td>
+          </tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- AGELEM -->
+    <div class="person-block" id="ts-agelem">
+      <div class="person-header" onclick="toggleBlock('ts-agelem')" style="background:#0D2B14;">
+        <div><h3>Agelem — Técnico de Segurança</h3><div class="info">8 projetos · Implantadores: Filipe, Gabriel, Geraldo, Gerlan, Gleison, Tulho</div></div>
+        <div class="ph-right"><div class="person-score-badge score-excelente">91,43%</div><span class="toggle-icon">▾</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-ok"><strong>Bom desempenho geral.</strong> Pendências: AST de Maio ausente nos projetos Acessibilidade (Filipe) e Água de Serviço (Tulho). Plano de Segurança conforme em todos os projetos. Pontuação impactada por Greendocs ou IDS.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Implantador</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Ata Reunião</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr><td class="proj">Acessibilidade área adm. — Fase 3<small>Macro Eng. · Implantador: Filipe</small></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Abril</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge parcial">Abril</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">02/06 14:42</span></td><td><span class="badge nc">Não tem Maio</span></td></tr>
+          <tr><td class="proj">Nova rede esgoto sanitário — Fase 3/4<small>Premold · Implantador: Gabriel</small></td><td><span class="badge parcial">Faltam 5</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 15:47</span></td><td><span class="badge nc">Não tem Maio</span></td></tr>
+          <tr><td class="proj">Instalação de Defensas — Guaíba e Pelotas<small>Aquafender · Implantador: Gabriel</small></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">Fora do prazo</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Não contém Maio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 16:11</span></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td class="proj">ETE G1 — Revamp / Grades Mecanizadas<small>Mastermec/Rioprel · Implantador: Geraldo</small></td><td><span class="badge parcial">Faltam 11</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 16:52</span></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td class="proj">Defapa — Passador de Ponta<small>Plasterm · Implantador: Gerlan</small></td><td><span class="badge parcial">Faltam 5</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">08/06 20:36</span></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td class="proj">Revitalização da Ponte Rolante MS2<small>Plasterm · Implantador: Gerlan</small></td><td><span class="badge nc">Fora do prazo</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Evid. não envio</span></td><td><span class="badge ok">08/06 21:23</span></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td class="proj">Instituto CMPC<small>Ducatti · Implantador: Gleison</small></td><td><span class="badge parcial">Faltam 5</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">NÃO</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">03/06 09:18</span></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td class="proj">Adequação sistema água de serviço — Fase 3/8<small>SR Soluções · Implantador: Tulho</small></td><td><span class="badge parcial">Faltam 3</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">08/06 16:25</span></td><td><span class="badge parcial">Vazia</span></td></tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- THAINÁ -->
+    <div class="person-block" id="ts-thaina">
+      <div class="person-header" onclick="toggleBlock('ts-thaina')" style="background:#0D2B14;">
+        <div><h3>Thainá — Técnico de Segurança</h3><div class="info">2 projetos · Implantador: Gabriel · Contratadas: Premold, Acesso</div></div>
+        <div class="ph-right"><div class="person-score-badge score-excelente">85,00%</div><span class="toggle-icon">▾</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-ok"><strong>Bom desempenho.</strong> Plano de Segurança e AST conformes nos 2 projetos. Penalização de 15% provavelmente oriunda de IDS (qualidade da documentação) ou Pendências Greendocs.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Implantador</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Ata Reunião</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr><td class="proj">Defapa — Condições Seg. Estruturais<small>Premold · Implantador: Gabriel</small></td><td><span class="badge parcial">Faltam 6</span></td><td><span class="badge parcial">Vazia Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 15:57</span></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td class="proj">NR-35 — Linhas de Vida (Fase 4/5)<small>Acesso · Implantador: Gabriel</small></td><td><span class="badge parcial">Faltam 5</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 16:06</span></td><td><span class="badge ok">OK</span></td></tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- MARIA -->
+    <div class="person-block" id="ts-maria">
+      <div class="person-header" onclick="toggleBlock('ts-maria')" style="background:#0D2B14;">
+        <div><h3>Maria — Técnico de Segurança</h3><div class="info">1 projeto · Implantador: Jacó · Contratada: Valmet</div></div>
+        <div class="ph-right"><div class="person-score-badge score-excelente">85,00%</div><span class="toggle-icon">▾</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-warn"><strong>Pontos de atenção:</strong> AST fora do prazo no projeto Difusores TB2/TB3. Plano de Ataque e Plano de Segurança conformes.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Implantador</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Ata Reunião</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr><td class="proj">Difusores TB2 e TB3 — 1ª Fase<small>Valmet · Implantador: Jacó</small></td><td><span class="badge atencao">OK c/ ressalva</span></td><td><span class="badge na">Não houve</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">03/06 16:38</span></td><td><span class="badge nc">Fora do prazo</span></td></tr>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- CRISTIELEN -->
+    <div class="person-block" id="ts-cristielen">
+      <div class="person-header" onclick="toggleBlock('ts-cristielen')" style="background:#0D2B14;">
+        <div><h3>Cristielen — Técnico de Segurança</h3><div class="info">11 projetos · Implantadores: Gabriel, Geraldo, Gerlan, Jacó, Toni, Tulho</div></div>
+        <div class="ph-right"><div class="person-score-badge score-excelente">81,36%</div><span class="toggle-icon">▾</span></div>
+      </div>
+      <div class="person-body">
+        <div class="person-note note-warn"><strong>Pontos de atenção:</strong> Maior carga de projetos (11). AST ausente ou vazia nos projetos de Toni (Automação G1, Gabinetes inversores) e em alguns de Tulho. Plano de Segurança vazio no projeto Gabinetes inversores G1. Positivo: Plano de Ataque e Plano de Segurança conformes na maioria dos projetos.</div>
+        <div class="project-table-wrap"><table>
+          <tr><th>Projeto / Implantador</th><th>RDO</th><th>Medição</th><th>Pl. Ataque</th><th>Pl. Seg.</th><th>Fotos</th><th>LV</th><th>Ata Reunião</th><th>Cronograma</th><th>RSP</th><th>Auditoria</th><th>AST</th></tr>
+          <tr><td class="proj">Calçadas do Parque Linear<small>Premold · Implantador: Gabriel</small></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 16:19</span></td><td><span class="badge nc">Não tem Maio</span></td></tr>
+          <tr><td class="proj">Instalação de Defensas — Guaíba e Pelotas<small>Aquafender · Implantador: Gabriel</small></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">Fora do prazo</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Não contém Maio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 16:11</span></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td class="proj">Pintura da Cloro Soda — Planta Química G1<small>Mastermec · Implantador: Geraldo</small></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">NÃO</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 17:00</span></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td class="proj">Novo sistema recirculação de licor<small>Plasterm · Implantador: Gerlan</small></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">08/06 20:45</span></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td class="proj">Melhoria limpeza duto de cinzas — Eco 1/CR2<small>Mastermec · Implantador: Gerlan</small></td><td><span class="badge parcial">Faltam 3</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Evid. não envio</span></td><td><span class="badge nc">Evid. não envio</span></td><td><span class="badge ok">08/06 21:16</span></td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td class="proj">Aumento capacidade secadores — G1<small>Fibrasul · Implantador: Jacó</small></td><td><span class="badge nc">Sem arq. Maio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">08/06 15:53</span></td><td><span class="badge parcial">Vazia</span></td></tr>
+          <tr><td class="proj">Instalar polarizador retificador T71 — Aditivo<small>Estel · Implantador: Toni</small></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">08/06 16:54</span></td><td><span class="badge parcial">Vazia</span></td></tr>
+          <tr><td class="proj">Gestão de Risco: Gabinetes inversores G1<small>SR Soluções · Implantador: Toni</small></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge parcial">Vazio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge parcial">Vazio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge na">Em PG</span></td><td><span class="badge na">Em PG</span></td><td><span class="badge ok">08/06 17:00</span></td><td><span class="badge nc">Não tem Maio</span></td></tr>
+          <tr><td class="proj">Atualização Tecnológica — Automação G1<small>Rioprel · Implantador: Toni</small></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">08/06 17:05</span></td><td><span class="badge parcial">Vazia</span></td></tr>
+          <tr><td class="proj">Utilização LBF — Chuveiros canaletas smelt CR1<small>Mastermec · Implantador: Tulho</small></td><td><span class="badge na">Em PG</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">08/06 16:07</span></td><td><span class="badge parcial">Vazia</span></td></tr>
+          <tr><td class="proj">Chuveiros de alta pressão do Kamyr<small>Mastermec · Implantador: Tulho</small></td><td><span class="badge na">Em PG</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge parcial">Vazia</span></td><td><span class="badge na">N/A</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge nc">Não tem Maio</span></td><td><span class="badge ok">08/06 16:31</span></td><td><span class="badge parcial">Vazia</span></td></tr>
+        </table></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PROJETOS EXCLUÍDOS -->
+<div class="excl-section">
+  <div class="section-title" style="font-size:1rem;color:#718096;border-color:#cbd5e0;margin-bottom:14px;">⚠️ Projetos Excluídos da Avaliação — Maio 2026</div>
+  <table class="excl-table">
+    <tr><th>Projeto</th><th>Implantador</th><th>TS</th><th>Motivo</th></tr>
+    <tr><td>NR-35 — CR2 e Peneiramento</td><td>Gabriel</td><td>Juliane</td><td><span class="badge nc">Não Iniciado</span></td></tr>
+    <tr><td>NR-35 — Estrutura Metálica Plataforma de Hipoclorito</td><td>Gabriel</td><td>Juliane</td><td><span class="badge nc">Não Iniciado</span></td></tr>
+    <tr><td>Dosagem de Talco Fase 2/2 — Plataforma</td><td>Geraldo</td><td>Cristielen</td><td><span class="badge na">Sem empresa recontratada</span></td></tr>
+    <tr><td>Dosagem de Talco Fase 2/2 — Tubulações</td><td>Geraldo</td><td>Cristielen</td><td><span class="badge na">Sem empresa recontratada</span></td></tr>
+    <tr><td>Defapa — NR12 e NR35</td><td>Gerlan</td><td>Thainá</td><td><span class="badge nc">Não Iniciado</span></td></tr>
+    <tr><td>Centro de Controle Ambiental (Fase 2)</td><td>Gleison</td><td>Agelem</td><td><span class="badge nc">Não Iniciado</span></td></tr>
+    <tr><td>Aumento secadores compressores G1 (Rioprel)</td><td>Jacó</td><td>Cristielen</td><td><span class="badge ok">Finalizado</span></td></tr>
+    <tr><td>Nova rede esgoto sanitário — Fase 2/3</td><td>Jacó</td><td>Agelem</td><td><span class="badge na">Sem empresa recontratada</span></td></tr>
+    <tr><td>Medição de gás natural</td><td>Toni</td><td>Cristielen</td><td><span class="badge parcial">Paralisado</span></td></tr>
+    <tr><td>Instalação disjuntores S32/S33/S34 — LSIG</td><td>Toni</td><td>Cristielen</td><td><span class="badge parcial">Paralisado</span></td></tr>
+    <tr><td>Controle de Bombas — Planta Química G2</td><td>Toni</td><td>Thainá</td><td><span class="badge na">Sem dados no período</span></td></tr>
+    <tr><td>Controle de Temperatura Efluente — Válvulas On/Off</td><td>Toni</td><td>Cristielen</td><td><span class="badge na">Sem dados no período</span></td></tr>
+    <tr><td>Instalar polarizador retificador T71 (ABB)</td><td>Toni</td><td>Cristielen</td><td><span class="badge na">Sem dados no período</span></td></tr>
+  </table>
+</div>
+
+<div class="footer">
+  Relatório gerado em 09/06/2026 &nbsp;·&nbsp; Competência Maio/2026 &nbsp;·&nbsp; CMPC — Gerência de Implantação
+</div>
+
+<script>
+  // ---- TABS ----
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ---- TOGGLE PERSON BLOCK ----
+  function toggleBlock(id) {
+    const block = document.getElementById(id);
+    if (!block) return;
+    const body = block.querySelector('.person-body');
+    const icon = block.querySelector('.toggle-icon');
+    if (!body) return;
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (icon) icon.classList.toggle('open', !isOpen);
+    if (!isOpen) {
+      setTimeout(() => block.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    }
+  }
+
+  // ---- GERAR PDF ----
+  function gerarPDF() {
+    const btn = document.querySelector('.btn-pdf');
+    const original = btn.innerHTML; // salva ANTES de alterar
+
+    // Expande todos os blocos
+    document.querySelectorAll('.person-body').forEach(el => el.classList.add('open'));
+    document.querySelectorAll('.toggle-icon').forEach(el => el.classList.add('open'));
+    // Mostra todas as abas
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'block');
+
+    btn.innerHTML = '⏳ Gerando...';
+    btn.disabled = true;
+
+    const opt = {
+      margin: [12, 10, 12, 10],
+      filename: 'Relatorio_Status_Projetos_Maio2026.pdf',
+      image: { type: 'jpeg', quality: 0.97 },
+      html2canvas: {
+        scale: 1.4,
+        useCORS: true,
+        scrollY: 0,
+        onclone: function(clonedDoc) {
+          // Esconde botão e abas no clone — não aparecem no PDF
+          const b = clonedDoc.querySelector('.btn-pdf');
+          if (b) b.style.display = 'none';
+          const tw = clonedDoc.querySelector('.tabs-wrap');
+          if (tw) tw.style.display = 'none';
+
+          // Agrupa header + nota de cada pessoa num wrapper com avoid-break
+          // Isso garante que o nome nunca fica sozinho no fim da página
+          clonedDoc.querySelectorAll('.person-block').forEach(function(block) {
+            const header = block.querySelector('.person-header');
+            const note   = block.querySelector('.person-note');
+            if (!header) return;
+            const wrapper = clonedDoc.createElement('div');
+            wrapper.style.cssText = 'page-break-inside:avoid;break-inside:avoid;';
+            header.parentNode.insertBefore(wrapper, header);
+            wrapper.appendChild(header);
+            if (note) wrapper.appendChild(note);
+          });
+        }
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+      pagebreak: { mode: ['avoid-all', 'css'] }
+    };
+
+    html2pdf().set(opt).from(document.body).save().then(() => {
+      btn.innerHTML = original;
+      btn.disabled = false;
+      // Restaura visibilidade das abas
+      document.querySelectorAll('.tab-content').forEach(el => el.style.display = '');
+      document.getElementById('tab-implantadores').classList.add('active');
+    });
+  }
+</script>
+</body>
+</html>

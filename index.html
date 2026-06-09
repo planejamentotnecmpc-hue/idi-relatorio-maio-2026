@@ -152,11 +152,11 @@
   .rnk-place.p1 .rnk-sbadge{font-size:.9rem;background:#C8E6C9;font-size:.95rem;}
   .rnk-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:white;border:3px solid #EFF2EE;box-shadow:0 3px 12px rgba(0,0,0,.28);position:relative;z-index:2;flex-shrink:0;}
   .rnk-place.p1 .rnk-av{width:66px;height:66px;font-size:1.05rem;}
-  .rnk-blk{width:100%;border-radius:6px 6px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:12px;gap:3px;margin-top:-24px;padding-top:30px;transition:filter .15s;}
-  .rnk-place.p2 .rnk-blk{height:100px;background:#7E95A4;}
-  .rnk-place.p1 .rnk-blk{height:140px;background:#1B4332;padding-top:40px;}
-  .rnk-place.p3 .rnk-blk{height:82px;background:#5E7078;padding-top:26px;}
-  .rnk-pname{color:rgba(255,255,255,.92);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
+  .rnk-blk{width:100%;border-radius:6px 6px 0 0;display:flex;align-items:center;justify-content:center;margin-top:6px;transition:filter .15s;}
+  .rnk-place.p2 .rnk-blk{height:70px;background:#7E95A4;}
+  .rnk-place.p1 .rnk-blk{height:104px;background:#1B4332;}
+  .rnk-place.p3 .rnk-blk{height:54px;background:#5E7078;}
+  .rnk-pname{color:#1B4332;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin:5px 0 3px;text-align:center;white-space:nowrap;}
   .rnk-pnum{color:white;font-size:1.9rem;font-weight:900;line-height:1.1;}
   .rnk-place.p1 .rnk-pnum{font-size:2.4rem;}
   /* meta */
@@ -400,17 +400,20 @@
         <div class="rnk-place p2" onclick="goTo('imp-gleison')">
           <div class="rnk-sbadge">75,45%</div>
           <div class="rnk-av" style="background:#2D6A4F;">GL</div>
-          <div class="rnk-blk"><div class="rnk-pname">Gleison</div><div class="rnk-pnum">2</div></div>
+          <div class="rnk-pname">Gleison</div>
+          <div class="rnk-blk"><div class="rnk-pnum">2</div></div>
         </div>
         <div class="rnk-place p1" onclick="goTo('imp-filipe')">
           <div class="rnk-sbadge">81,83%</div>
           <div class="rnk-av" style="background:#0D6131;">FI</div>
-          <div class="rnk-blk"><div class="rnk-pname">Filipe</div><div class="rnk-pnum">1</div></div>
+          <div class="rnk-pname">Filipe</div>
+          <div class="rnk-blk"><div class="rnk-pnum">1</div></div>
         </div>
         <div class="rnk-place p3" onclick="goTo('imp-jaco')">
           <div class="rnk-sbadge">72,08%</div>
           <div class="rnk-av" style="background:#2D6A4F;">JC</div>
-          <div class="rnk-blk"><div class="rnk-pname">Jacó</div><div class="rnk-pnum">3</div></div>
+          <div class="rnk-pname">Jacó</div>
+          <div class="rnk-blk"><div class="rnk-pnum">3</div></div>
         </div>
       </div>
       <div class="rnk-meta"><hr class="rnk-meta-line"><span class="rnk-meta-txt">META: 60%</span></div>
@@ -671,17 +674,20 @@
         <div class="rnk-place p2" onclick="goTo('plan-pedro')">
           <div class="rnk-sbadge">90,00%</div>
           <div class="rnk-av" style="background:#1B4332;">PE</div>
-          <div class="rnk-blk"><div class="rnk-pname">Pedro</div><div class="rnk-pnum">2</div></div>
+          <div class="rnk-pname">Pedro</div>
+          <div class="rnk-blk"><div class="rnk-pnum">2</div></div>
         </div>
         <div class="rnk-place p1" onclick="goTo('plan-daniel')">
           <div class="rnk-sbadge">100,00%</div>
           <div class="rnk-av" style="background:#0D6131;">DA</div>
-          <div class="rnk-blk"><div class="rnk-pname">Daniel</div><div class="rnk-pnum">1</div></div>
+          <div class="rnk-pname">Daniel</div>
+          <div class="rnk-blk"><div class="rnk-pnum">1</div></div>
         </div>
         <div class="rnk-place p3" onclick="goTo('plan-fernando')">
           <div class="rnk-sbadge">67,50%</div>
           <div class="rnk-av" style="background:#2D6A4F;">FN</div>
-          <div class="rnk-blk"><div class="rnk-pname">Fernando</div><div class="rnk-pnum">3</div></div>
+          <div class="rnk-pname">Fernando</div>
+          <div class="rnk-blk"><div class="rnk-pnum">3</div></div>
         </div>
       </div>
       <div class="rnk-meta"><hr class="rnk-meta-line"><span class="rnk-meta-txt">META: 70%</span></div>
@@ -794,17 +800,20 @@
         <div class="rnk-place p2" onclick="goTo('ts-agelem')">
           <div class="rnk-sbadge">91,43%</div>
           <div class="rnk-av" style="background:#1B4332;">AG</div>
-          <div class="rnk-blk"><div class="rnk-pname">Agelem</div><div class="rnk-pnum">2</div></div>
+          <div class="rnk-pname">Agelem</div>
+          <div class="rnk-blk"><div class="rnk-pnum">2</div></div>
         </div>
         <div class="rnk-place p1" onclick="goTo('ts-elisa')">
           <div class="rnk-sbadge">100,00%</div>
           <div class="rnk-av" style="background:#0D6131;">EL</div>
-          <div class="rnk-blk"><div class="rnk-pname">Elisa</div><div class="rnk-pnum">1</div></div>
+          <div class="rnk-pname">Elisa</div>
+          <div class="rnk-blk"><div class="rnk-pnum">1</div></div>
         </div>
         <div class="rnk-place p3" onclick="goTo('ts-thaina')">
           <div class="rnk-sbadge">85,00%</div>
           <div class="rnk-av" style="background:#2D6A4F;">TH</div>
-          <div class="rnk-blk"><div class="rnk-pname">Thainá</div><div class="rnk-pnum">3</div></div>
+          <div class="rnk-pname">Thainá</div>
+          <div class="rnk-blk"><div class="rnk-pnum">3</div></div>
         </div>
       </div>
       <div class="rnk-meta"><hr class="rnk-meta-line"><span class="rnk-meta-txt">META: 60%</span></div>

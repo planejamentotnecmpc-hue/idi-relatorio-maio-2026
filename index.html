@@ -433,7 +433,7 @@
           </tr>
           <tr>
             <td class="proj">Central de Resíduos — Santa Isabel<small>Coesul · TS: Elisa</small></td>
-            <td><span class="badge na">N/A</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 14:53</span></td><td><span class="badge ok">OK</span></td>
+            <td><span class="badge ok">24/mai</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge ok">OK</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge na">N/A</span></td><td><span class="badge ok">02/06 14:53</span></td><td><span class="badge ok">OK</span></td>
           </tr>
         </table></div>
       </div>
@@ -940,39 +940,52 @@
 </div>
 
 <script>
-  // ---- AGENDA SEMANAL: valores reais do Excel (coluna ATA DE REUNIÃO) ----
+  // ---- KPIs implantadores: valores reais do Excel (Planilha1) ----
+  // Índices de célula: 1=RDO, 2=Medição, 5=Fotos, 6=LV, 7=ATA, 8=Crono, 9=RSP
   (function() {
     var dados = [
-      { key: 'Central de Resíduos',        val: 3 },
-      { key: 'Instituto CMPC',             val: 4 },
-      { key: 'Aumento capacidade',         val: 1 },
-      { key: 'Difusores TB2',              val: 2 },
-      { key: 'ETE G1',                     val: 0 },
-      { key: 'Pintura da Cloro Soda',      val: 0 },
-      { key: 'Chuveiros de alta press',    val: 1 },
-      { key: 'polarizador retificador',    val: 1 },
-      { key: 'Passador de Ponta',          val: 4 },
-      { key: 'recirculação de licor',      val: 2 },
-      { key: 'Ponte Rolante',              val: 3 },
-      { key: 'Nova rede esgoto',           val: 4 },
-      { key: 'Calçadas do Parque',         val: 2 },
-      { key: 'Condições Seg',              val: 4 },
-      { key: 'Linhas de Vida',             val: 3 },
-      { key: 'Defensas',                   val: 0 }
+      ['Central de Resíduos',     { 7:3,  8:4,  9:4          }],
+      ['Instituto CMPC',          { 7:4,  8:4,  9:4          }],
+      ['Aumento capacidade',      { 2:0,  7:1,  8:0,  9:1   }],
+      ['Difusores TB2',           { 7:2,  8:3,  9:3          }],
+      ['ETE G1',                  { 7:0,  8:0,  9:0          }],
+      ['Pintura da Cloro Soda',   { 7:0,  8:1,  9:3          }],
+      ['Utilização LBF',          { 5:3                       }],
+      ['Água de serviço',         { 6:1,  8:3,  9:3          }],
+      ['Chuveiros de alta',       { 7:1                       }],
+      ['polarizador retificador', { 7:1,  8:4               }],
+      ['Passador de Ponta',       { 5:20, 7:4,  8:4,  9:4   }],
+      ['recirculação de licor',   { 1:1,  5:6,  7:2,  8:2,  9:2 }],
+      ['Melhoria limpeza',        { 5:20, 6:1               }],
+      ['Ponte Rolante',           { 5:9,  8:3               }],
+      ['Nova rede esgoto',        { 6:1,  7:4,  8:4,  9:4   }],
+      ['Calçadas do Parque',      { 7:2,  8:0,  9:0          }],
+      ['Condições Seg',           { 7:4,  8:4,  9:4          }],
+      ['Linhas de Vida',          { 7:3,  8:4,  9:4          }],
+      ['Defensas',                { 7:0,  9:0               }],
     ];
+    function calcBadge(ci, v) {
+      if (ci >= 7 && ci <= 9) { // ATA, Crono, RSP: "X de 4"
+        return { c: v>=4?'ok':v>=2?'parcial':'nc', t: v+' de 4' };
+      }
+      return v > 0 ? { c:'ok', t:'OK' } : { c:'nc', t:'NC' };
+    }
     document.querySelectorAll('#tab-implantadores .project-table-wrap table tr').forEach(function(row) {
       var cells = row.querySelectorAll('td');
-      if (cells.length < 8) return;
-      var projText = cells[0].textContent || '';
-      var badge = cells[7].querySelector('.badge');
-      if (!badge || !badge.classList.contains('na')) return;
-      for (var i = 0; i < dados.length; i++) {
-        if (projText.indexOf(dados[i].key) !== -1) {
-          var v = dados[i].val;
-          badge.className = 'badge ' + (v === 4 ? 'ok' : v >= 2 ? 'parcial' : 'nc');
-          badge.textContent = v + ' de 4';
-          break;
+      if (cells.length < 10) return;
+      var txt = cells[0].textContent || '';
+      for (var k = 0; k < dados.length; k++) {
+        if (txt.indexOf(dados[k][0]) === -1) continue;
+        var d = dados[k][1];
+        for (var ci in d) {
+          var i = parseInt(ci);
+          var b = cells[i] && cells[i].querySelector('.badge.na');
+          if (!b) continue;
+          var bd = calcBadge(i, d[ci]);
+          b.className = 'badge ' + bd.c;
+          b.textContent = bd.t;
         }
+        break;
       }
     });
   })();

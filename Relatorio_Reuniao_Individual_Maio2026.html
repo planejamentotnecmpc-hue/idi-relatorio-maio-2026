@@ -67,11 +67,21 @@
   /* ---- SELEÇÃO / COMENTÁRIOS ---- */
   .meeting-select{font-size:.95rem;padding:10px 14px;border:2px solid #DDE5DA;border-radius:8px;background:white;color:#1A2B1F;font-weight:600;min-width:280px;cursor:pointer;}
   .meeting-placeholder{color:#A0AEC0;font-size:.9rem;padding:40px 0;text-align:center;border:2px dashed #DDE5DA;border-radius:10px;}
-  .meeting-comments{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:16px 20px;}
+  .meeting-comments-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 20px 0;font-size:.78rem;color:#718096;}
+  .mc-reset{border:1px solid #CBD5C9;border-radius:6px;padding:3px 10px;font-size:.74rem;font-weight:600;color:#4A5568;background:white;cursor:pointer;}
+  .mc-reset:hover{background:#F0F4F1;}
+  .meeting-comments{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:10px 20px 16px;}
   .meeting-comment-box{border-radius:10px;padding:16px 18px;}
   .meeting-comment-box h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-weight:800;}
-  .meeting-comment-box ul{margin:0;padding-left:18px;}
-  .meeting-comment-box li{font-size:.92rem;line-height:1.55;margin-bottom:7px;color:#1A2B1F;}
+  .meeting-comment-box ul{margin:0;padding-left:18px;list-style:disc;}
+  .meeting-comment-box li{font-size:.92rem;line-height:1.55;margin-bottom:4px;color:#1A2B1F;display:flex;align-items:flex-start;gap:6px;}
+  .meeting-comment-box .mc-text{flex:1;outline:none;border-radius:4px;padding:1px 4px;margin:-1px -4px;cursor:text;}
+  .meeting-comment-box .mc-text:hover{background:rgba(0,0,0,.05);}
+  .meeting-comment-box .mc-text:focus{background:#fff;box-shadow:0 0 0 2px rgba(45,106,79,.35);}
+  .mc-remove{flex-shrink:0;border:none;background:none;color:#A0AEC0;font-size:1rem;line-height:1.4;cursor:pointer;padding:0 2px;}
+  .mc-remove:hover{color:#C0392B;}
+  .mc-add{margin-top:6px;font-size:.76rem;font-weight:600;padding:4px 10px;border-radius:6px;border:1px dashed #A8BFB0;background:transparent;color:#4A5568;cursor:pointer;}
+  .mc-add:hover{background:rgba(0,0,0,.05);}
   .mc-fortes{background:#E6F4EA;border:2px solid #2D6A4F;}
   .mc-fortes h4{color:#1B4332;}
   .mc-atencao{background:#FFF8E1;border:2px solid #C09A1F;}
@@ -79,6 +89,10 @@
   .mc-fracos{background:#FDECEC;border:2px solid #C0392B;}
   .mc-fracos h4{color:#8B2E20;}
   @media(max-width:900px){.meeting-comments{grid-template-columns:1fr;}}
+  @media print{
+    .meeting-comments-toolbar,.mc-remove,.mc-add{display:none!important;}
+    .meeting-comment-box .mc-text:hover,.meeting-comment-box .mc-text:focus{background:none!important;box-shadow:none!important;}
+  }
 
   /* ---- COLUNAS POR FUNÇÃO (clones em #meeting-container) ---- */
   #meeting-container .mt-imp table th:nth-child(9),
@@ -704,6 +718,88 @@
     }
   };
 
+  // ---- Edição dos pontos fortes/atenção/fracos (persistida no navegador) ----
+  var MC_STORAGE_KEY = 'idi-meeting-comments-overrides-maio2026';
+
+  function mcLoadOverrides() {
+    try { return JSON.parse(localStorage.getItem(MC_STORAGE_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function mcSaveOverrides(overrides) {
+    try { localStorage.setItem(MC_STORAGE_KEY, JSON.stringify(overrides)); } catch (e) {}
+  }
+  function mcGetPersonData(id) {
+    var base = meetingComments[id] || { fortes: [], atencao: [], fracos: [] };
+    var o = mcLoadOverrides()[id] || {};
+    return {
+      fortes:  o.fortes  || base.fortes.slice(),
+      atencao: o.atencao || base.atencao.slice(),
+      fracos:  o.fracos  || base.fracos.slice()
+    };
+  }
+  function mcResetPerson(id) {
+    var overrides = mcLoadOverrides();
+    delete overrides[id];
+    mcSaveOverrides(overrides);
+    loadMeetingPerson(id);
+  }
+  function mcSyncGroup(id, key, ul) {
+    var overrides = mcLoadOverrides();
+    if (!overrides[id]) overrides[id] = {};
+    var items = [];
+    ul.querySelectorAll('li > .mc-text').forEach(function(span) {
+      var t = span.textContent.trim();
+      if (t) items.push(t);
+    });
+    overrides[id][key] = items;
+    mcSaveOverrides(overrides);
+  }
+  function mcMakeBox(id, g, items) {
+    var box = document.createElement('div');
+    box.className = 'meeting-comment-box ' + g.cls;
+    var h4 = document.createElement('h4');
+    h4.textContent = g.title;
+    box.appendChild(h4);
+    var ul = document.createElement('ul');
+
+    function addLi(text, focus) {
+      var li = document.createElement('li');
+      var span = document.createElement('span');
+      span.className = 'mc-text';
+      span.contentEditable = 'true';
+      span.textContent = text;
+      span.addEventListener('input', function() { mcSyncGroup(id, g.key, ul); });
+      span.addEventListener('blur', function() {
+        if (!span.textContent.trim()) li.remove();
+        mcSyncGroup(id, g.key, ul);
+      });
+      var rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'mc-remove';
+      rm.title = 'Remover este ponto';
+      rm.textContent = '×';
+      rm.addEventListener('click', function() {
+        li.remove();
+        mcSyncGroup(id, g.key, ul);
+      });
+      li.appendChild(span);
+      li.appendChild(rm);
+      ul.appendChild(li);
+      if (focus) span.focus();
+    }
+
+    items.forEach(function(t) { addLi(t, false); });
+    box.appendChild(ul);
+
+    var addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'mc-add';
+    addBtn.textContent = '+ adicionar ponto';
+    addBtn.addEventListener('click', function() { addLi('', true); });
+    box.appendChild(addBtn);
+
+    return box;
+  }
+
   function loadMeetingPerson(id) {
     var container = document.getElementById('meeting-container');
     if (!id) {
@@ -720,8 +816,24 @@
     if (body) body.classList.add('open');
 
     var note = clone.querySelector('.person-note');
-    var data = meetingComments[id];
-    if (note && data) {
+    if (note && meetingComments[id]) {
+      var data = mcGetPersonData(id);
+      var wrap = document.createElement('div');
+      wrap.className = 'meeting-comments-wrap';
+
+      var toolbar = document.createElement('div');
+      toolbar.className = 'meeting-comments-toolbar';
+      var hint = document.createElement('span');
+      hint.textContent = '✏️ Clique nos pontos para editar antes da reunião';
+      var resetBtn = document.createElement('button');
+      resetBtn.type = 'button';
+      resetBtn.className = 'mc-reset';
+      resetBtn.textContent = '↺ Restaurar padrão';
+      resetBtn.addEventListener('click', function() { mcResetPerson(id); });
+      toolbar.appendChild(hint);
+      toolbar.appendChild(resetBtn);
+      wrap.appendChild(toolbar);
+
       var grid = document.createElement('div');
       grid.className = 'meeting-comments';
       var groups = [
@@ -730,23 +842,10 @@
         { key: 'fracos',  cls: 'mc-fracos',  title: '🔴 Pontos Fracos' }
       ];
       groups.forEach(function(g) {
-        var items = data[g.key] || [];
-        if (!items.length) return;
-        var box = document.createElement('div');
-        box.className = 'meeting-comment-box ' + g.cls;
-        var h4 = document.createElement('h4');
-        h4.textContent = g.title;
-        box.appendChild(h4);
-        var ul = document.createElement('ul');
-        items.forEach(function(t) {
-          var li = document.createElement('li');
-          li.textContent = t;
-          ul.appendChild(li);
-        });
-        box.appendChild(ul);
-        grid.appendChild(box);
+        grid.appendChild(mcMakeBox(id, g, data[g.key] || []));
       });
-      note.replaceWith(grid);
+      wrap.appendChild(grid);
+      note.replaceWith(wrap);
     }
 
     container.innerHTML = '';

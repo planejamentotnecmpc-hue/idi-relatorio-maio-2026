@@ -31,7 +31,12 @@
   /* ---- IDI SECTION ---- */
   .ide-section{padding:28px 48px;background:white;border-bottom:2px solid #DDE5DA;}
   .ide-section h2{font-size:1rem;font-weight:700;color:#3D5045;text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px;}
-  .ide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:10px;margin-bottom:20px;}
+  .ide-flow{display:flex;align-items:stretch;gap:0;margin-bottom:20px;}
+  .ide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;flex:1 1 auto;}
+  .ide-arrow{flex:0 0 64px;display:flex;align-items:center;justify-content:center;}
+  .ide-arrow svg{width:100%;height:84px;display:block;}
+  .ide-result{flex:0 0 250px;}
+  .ide-result .ide-card{height:100%;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;}
   .ide-card{border-radius:6px;padding:14px 16px;text-align:center;background:white;border:1px solid #DDE5DA;border-top:3px solid #A8BFB0;}
   .ide-card .lbl{font-size:.70rem;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:#5A6B5E;min-height:2.4em;display:flex;align-items:center;justify-content:center;}
   .ide-card .val{font-size:1.8rem;font-weight:700;margin:6px 0 2px;color:#1A2B1F;font-variant-numeric:tabular-nums;letter-spacing:-1px;font-family:'Segoe UI',system-ui,sans-serif;}
@@ -46,10 +51,16 @@
   .ide-seg .val{color:#0D2B14;}
   .ide-mat{border-top-color:#A8BFB0;}
   .ide-mat .val{color:#718096;}
-  .ide-total{background:linear-gradient(135deg,#071A0C,#1B4332);border:none;border-top:3px solid #74C69D;}
+  .ide-total{background:linear-gradient(135deg,#0B2415,#1B4332 55%,#2D6A4F);border:none;border-top:3px solid #74C69D;box-shadow:0 12px 28px -10px rgba(11,36,21,.55);}
   .ide-total .lbl{color:#95D5B2;}
-  .ide-total .val{color:white;font-size:2.2rem;font-variant-numeric:tabular-nums;letter-spacing:-1px;}
+  .ide-total .val{color:white;font-size:2.8rem;font-variant-numeric:tabular-nums;letter-spacing:-1px;}
   .ide-total .sub{color:#95D5B2;}
+  @media (max-width:900px){
+    .ide-flow{flex-direction:column;}
+    .ide-arrow{flex-basis:48px;}
+    .ide-arrow svg{height:48px;transform:rotate(90deg);}
+    .ide-result{flex-basis:auto;}
+  }
   .ide-table{width:100%;border-collapse:collapse;font-size:.82rem;max-width:700px;}
   .ide-table th{background:#F4F7F4;color:#4A5568;font-weight:700;padding:8px 14px;text-align:left;border-bottom:2px solid #DDE5DA;}
   .ide-table td{padding:8px 14px;border-bottom:1px solid #EEF2EE;}
@@ -237,6 +248,7 @@
 
     /* Blocos de resumo — nunca quebrar no meio */
     .ide-grid{break-inside:avoid!important;page-break-inside:avoid!important;}
+    .ide-flow{break-inside:avoid!important;page-break-inside:avoid!important;}
     .ide-equation{break-inside:avoid!important;page-break-inside:avoid!important;}
     .cards-grid{break-inside:avoid!important;page-break-inside:avoid!important;}
     .legend{break-inside:avoid!important;}
@@ -353,53 +365,68 @@
 <!-- IDI -->
 <div class="ide-section">
   <h2>Média do IDI</h2>
-  <div class="ide-grid">
-    <div class="ide-card ide-implantador">
-      <div class="lbl">Média Implantadores</div>
-      <div class="val">66,6%</div>
-      <div class="ide-contrib">
-        <span class="ide-peso">Peso 25</span>
-        <span class="ide-pts">16,65 pts</span>
+  <div class="ide-flow">
+    <div class="ide-grid">
+      <div class="ide-card ide-implantador">
+        <div class="lbl">Média Implantadores</div>
+        <div class="val">66,6%</div>
+        <div class="ide-contrib">
+          <span class="ide-peso">Peso 25</span>
+          <span class="ide-pts">16,65 pts</span>
+        </div>
+      </div>
+      <div class="ide-card ide-rotina">
+        <div class="lbl">Planejamento de Rotina</div>
+        <div class="val">57,9%</div>
+        <div class="ide-contrib">
+          <span class="ide-peso">Peso 25</span>
+          <span class="ide-pts">14,49 pts</span>
+        </div>
+      </div>
+      <div class="ide-card ide-especial">
+        <div class="lbl">Planejamento Especial</div>
+        <div class="val">85,8%</div>
+        <div class="ide-contrib">
+          <span class="ide-peso">Peso 25</span>
+          <span class="ide-pts">21,46 pts</span>
+        </div>
+      </div>
+      <div class="ide-card ide-seg">
+        <div class="lbl">Média Segurança</div>
+        <div class="val">88,3%</div>
+        <div class="ide-contrib">
+          <span class="ide-peso">Peso 25</span>
+          <span class="ide-pts">22,06 pts</span>
+        </div>
+      </div>
+      <div class="ide-card ide-mat">
+        <div class="lbl">Média Materiais</div>
+        <div class="val" style="color:#A8BFB0;">—</div>
+        <div class="ide-contrib">
+          <span class="ide-peso">Peso 0</span>
+          <span class="ide-pts" style="color:#C0CFCA;">0,00 pts</span>
+        </div>
       </div>
     </div>
-    <div class="ide-card ide-rotina">
-      <div class="lbl">Planejamento de Rotina</div>
-      <div class="val">57,9%</div>
-      <div class="ide-contrib">
-        <span class="ide-peso">Peso 25</span>
-        <span class="ide-pts">14,49 pts</span>
-      </div>
+    <div class="ide-arrow" aria-hidden="true">
+      <svg viewBox="0 0 60 84" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ideArrowGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#95D5B2" stop-opacity="0.25"/>
+            <stop offset="1" stop-color="#1B4332" stop-opacity="0.95"/>
+          </linearGradient>
+        </defs>
+        <path d="M2 22 H32 V2 L58 42 L32 82 V62 H2 Z" fill="url(#ideArrowGrad)"/>
+      </svg>
     </div>
-    <div class="ide-card ide-especial">
-      <div class="lbl">Planejamento Especial</div>
-      <div class="val">85,8%</div>
-      <div class="ide-contrib">
-        <span class="ide-peso">Peso 25</span>
-        <span class="ide-pts">21,46 pts</span>
-      </div>
-    </div>
-    <div class="ide-card ide-seg">
-      <div class="lbl">Média Segurança</div>
-      <div class="val">88,3%</div>
-      <div class="ide-contrib">
-        <span class="ide-peso">Peso 25</span>
-        <span class="ide-pts">22,06 pts</span>
-      </div>
-    </div>
-    <div class="ide-card ide-mat">
-      <div class="lbl">Média Materiais</div>
-      <div class="val" style="color:#A8BFB0;">—</div>
-      <div class="ide-contrib">
-        <span class="ide-peso">Peso 0</span>
-        <span class="ide-pts" style="color:#C0CFCA;">0,00 pts</span>
-      </div>
-    </div>
-    <div class="ide-card ide-total">
-      <div class="lbl">IDI IMPLANTAÇÃO</div>
-      <div class="val">74,7%</div>
-      <div class="ide-contrib">
-        <span class="ide-peso">Peso 100</span>
-        <span class="ide-pts">74,66 pts</span>
+    <div class="ide-result">
+      <div class="ide-card ide-total">
+        <div class="lbl">IDI IMPLANTAÇÃO</div>
+        <div class="val">74,7%</div>
+        <div class="ide-contrib">
+          <span class="ide-peso">Peso 100</span>
+          <span class="ide-pts">74,66 pts</span>
+        </div>
       </div>
     </div>
   </div>
